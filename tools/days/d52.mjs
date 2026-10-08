@@ -1,0 +1,27 @@
+﻿export default {
+  52: {
+    title: 'Code Splitting and Lazy Loading',
+    react: 'React.lazy + Suspense, route-level splitting, loading fallbacks inside the layout, lazy charts, build output analysis',
+    insurance: 'A claims officer should not download the motor quote engine, charts or admin screens to open the claims list',
+    backend: 'No change',
+    database: 'No change',
+    objectives: ['Split by route', 'Show a loader while a chunk downloads', 'Read the Vite build report', 'Know what NOT to split'],
+    concepts: [
+      { name: 'Code splitting', why: 'One big bundle delays the first screen for everyone.', what: 'Dynamic import() makes the bundler emit a separate chunk that is fetched on demand.', where: 'router.tsx (24 lazy pages), ReportCharts.' },
+      { name: 'React.lazy + Suspense', why: 'A lazy component is not ready on first render.', what: 'Suspense shows a fallback until the chunk arrives. We put it around the Outlet so the sidebar and header never disappear.', where: 'PageLayout.' },
+      { name: 'Split where users wait', why: 'Splitting tiny things adds requests for no gain.', what: 'Login, dashboard shell and admin layout stay eager; pages and heavy libraries (Recharts 400 kB) are lazy.', where: 'lazify decisions in router.tsx.' },
+      { name: 'Measure the result', why: 'Bundles drift over time.', what: 'npm run build prints chunk sizes; shared vendor code stays in the entry while each page becomes a 4-10 kB chunk.', where: 'Vite build output.' },
+    ],
+    built: ['Lazy routes for all feature pages', 'Suspense boundary with loader in PageLayout'],
+    walkthrough: 'Open the browser Network tab, load the dashboard, then click Customers: a small CustomersPage chunk is downloaded only at that moment.',
+    api: [],
+    db: [],
+    learned: ['Split by route first', 'Keep the Suspense boundary inside the layout', 'Chunk size reports are part of review'],
+    approach: 'Load what the user needs now, defer the rest.',
+    mistakes: ['Lazy loading the layout itself', 'Suspense at the app root (whole screen blinks)', 'Splitting tiny components'],
+    interview: [['How does React.lazy work?', 'It wraps a function returning a dynamic import(); React suspends rendering until the promise resolves and Suspense shows the fallback.']],
+    exercise: 'Prefetch a page chunk when the user hovers its sidebar link.',
+    next: 'Day 53 - Security Hardening',
+    commit: 'Day 52: Add route-level code splitting',
+  },
+}
