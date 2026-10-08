@@ -1,0 +1,28 @@
+export default {
+  17: {
+    title: 'Authentication concepts, login, JWT',
+    react: 'Auth flow, forms + API, storing session state (memory vs storage)',
+    insurance: 'Login page (branded split layout) with validation and server error messages',
+    backend: 'POST /api/auth/login, /refresh, /logout, GET /api/auth/me; JWT (HS256) + rotating refresh tokens in an httpOnly cookie; bcrypt password hashing; lockout after 5 failures',
+    database: 'roles, users, user_roles, refresh_tokens; fn_user_get_by_username, fn_auth_login_*, fn_refresh_token_*; seeded users',
+    objectives: ['Understand authentication vs authorization', 'Understand JWT structure and trade-offs', 'Choose where tokens live', 'Build the login form'],
+    concepts: [
+      { name: 'JWT', why: 'A stateless proof of identity the API can verify without a session store.', what: 'header.payload.signature (Base64URL). The signature (HMAC-SHA256 with a secret) proves the payload was not changed. The payload is readable by anyone - never put secrets in it.', how: 'API signs after login; client sends `Authorization: Bearer <jwt>`; JwtBearer middleware validates signature, issuer, audience, expiry.', where: 'JwtTokenService.cs, AddJwtAuthentication.' },
+      { name: 'Access + refresh tokens', why: 'Short-lived access tokens limit damage if stolen; refresh tokens keep the user signed in.', what: 'Access token (30 min) in memory; refresh token (7 days) in an httpOnly, SameSite cookie, stored hashed in the DB and rotated on every use. Reuse of an old token revokes all sessions.', how: 'POST /auth/refresh with the cookie returns a new access token.', where: 'AuthService.RefreshAsync.' },
+      { name: 'Password hashing', why: 'Databases leak.', what: 'bcrypt: salted, slow hash. Never store or log plain passwords.', how: 'Seed uses pgcrypto crypt(..., gen_salt(\'bf\')); API verifies with BCrypt.Net.', where: 'seed/050_roles_users.sql, AuthService.' },
+      { name: 'Where to store the token?', why: 'XSS can read localStorage; CSRF can use cookies.', what: 'Memory (safest from XSS, lost on reload) + httpOnly cookie for silent refresh.', how: 'tokenStore.ts module variable; cookie Path=/api/auth, SameSite=Lax.', where: 'tokenStore.ts, AuthController.' },
+    ],
+    built: ['Login page', 'authApi, tokenStore, AuthProvider (login)', 'Auth tables + functions + seed', 'JWT auth in the API'],
+    walkthrough: 'LoginPage validates with Zod, calls login() from AuthProvider which posts credentials, stores the access token in memory and the user in state. A 401 ProblemDetails is shown above the form.',
+    api: ['POST /api/auth/login → {accessToken, expiresAt, user} + Set-Cookie li_rt', 'POST /api/auth/refresh (cookie)', 'POST /api/auth/logout', 'GET /api/auth/me [Authorize]'],
+    db: ['tables/010_security.sql', 'functions/200_auth.sql', 'seed/050_roles_users.sql (admin/Admin@123, underwriter|agent|claims|viewer / Pass@123)'],
+    problems: [['Cookies need credentials on both sides', 'Axios withCredentials: true and API CORS AllowCredentials with explicit origins (no wildcard).']],
+    learned: ['Authentication = who you are; authorization = what you may do', 'JWT is signed, not encrypted', 'Refresh rotation detects theft'],
+    approach: 'Short-lived in-memory access token + httpOnly refresh cookie is the best-practice SPA setup.',
+    mistakes: ['Storing JWTs in localStorage', 'Long-lived access tokens', 'Telling the user whether the username or password was wrong'],
+    interview: [['Is a JWT encrypted?', 'No, only signed; anyone can decode the payload.'], ['Why httpOnly cookie for refresh?', 'JavaScript cannot read it, which blocks XSS token theft.'], ['What is token rotation?', 'Issuing a new refresh token on each use and invalidating the old one.']],
+    exercise: 'Show friendly login error messages for invalid credentials and a locked account (done) - now add a "Show password" toggle.',
+    next: 'Day 18 - Protected routes, auth context, token handling',
+    commit: 'Day 17: Add login with JWT',
+  },
+}
