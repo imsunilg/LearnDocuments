@@ -2,6 +2,7 @@
 
 | Commit | Date | Message |
 |---|---|---|
+| fe9c25f | 2026-10-08 | Day 07: Add routing and API/database foundation |
 | 24b6bff | 2026-10-08 | Day 06: Load customers with useEffect |
 | b749edf | 2026-10-08 | Day 05: Add customer create/edit screen with validation |
 | 6b8ae15 | 2026-10-08 | Day 04: Add customer listing with conditional rendering |
