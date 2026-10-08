@@ -10,6 +10,8 @@ const root = join(here, '..', '..')
 const n = Number(process.argv[2])
 const run = (c) => execSync(c, { cwd: root, stdio: ['ignore', 'pipe', 'inherit'] }).toString()
 
+// A running API locks its DLL and breaks dotnet build; stop it first.
+try { execSync('taskkill /F /IM LearnAPI.exe', { stdio: 'ignore' }) } catch { /* not running */ }
 // End-of-day rule: never commit broken code. Builds must pass first (set SKIP_BUILD=1 to bypass for docs-only commits).
 if (!process.env.SKIP_BUILD) {
   const sh = (cmd, cwd) => execSync(cmd, { cwd: join(root, cwd), stdio: ['ignore', 'ignore', 'inherit'] })

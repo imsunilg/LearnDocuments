@@ -1,0 +1,25 @@
+export default {
+  31: {
+    title: 'Advanced reusable components',
+    react: 'Compound components (context-based), form sections, FormProvider/useFormContext, wrapper fields, ARIA wiring by construction',
+    insurance: 'The motor quote form rebuilt from FormSection / FormGrid / TextField / SelectField',
+    objectives: ['Build a compound component with context', 'Remove prop drilling in big forms', 'Make accessibility automatic'],
+    concepts: [
+      { name: 'Compound components', why: 'A field is label + control + hint + error that must share ids and state. Props for each of those get unwieldy.', what: '`<FormField><FormField.Label/><FormField.Control/>…</FormField>`: the parent provides context, the parts read it.', how: 'useId() generates a stable id; Control clones its child and injects id, aria-invalid and aria-describedby.', where: 'components/forms/FormField.tsx.' },
+      { name: 'FormProvider / useFormContext', why: 'Passing register and errors to every field is noise.', what: 'RHF puts the form methods in context; TextField/SelectField read them. `get(errors, "vehicle.make")` resolves nested paths.', where: 'fields.tsx, MotorQuotePage.' },
+      { name: 'Layout components', why: 'Spacing and structure should be consistent.', what: 'FormSection (titled, optionally collapsible card), FormGrid (responsive columns).', where: 'FormSection.tsx, FormGrid.tsx.' },
+      { name: 'cloneElement', why: 'Inject props into a child you do not own.', what: 'React.cloneElement(child, extraProps). Use sparingly - context is usually better.', where: 'FormField.Control.' },
+    ],
+    built: ['FormField (compound), TextField, SelectField, TextAreaField, FormSection, FormGrid', 'MotorQuotePage refactored (~120 fewer lines)'],
+    walkthrough: 'Each field now declares only its name, label and rules; label/error/ARIA are consistent across the app. Hint is replaced by the error automatically.',
+    tsNotes: ['Static members on function components (FormField.Label = …)', 'ReactElement<Record<string, unknown>> for cloneElement'],
+    bestPractices: ['One visual field implementation', 'Use context for tightly coupled parts; props for the public API'],
+    learned: ['Compound components model "family of parts" cleanly', 'FormProvider ends prop drilling in forms'],
+    approach: 'Phase 4 has four large forms; shared field components keep them consistent and accessible.',
+    mistakes: ['Cloning children everywhere instead of using context', 'Forgetting that useFormContext needs a FormProvider'],
+    interview: [['What is a compound component?', 'A group of components that share implicit state via context, giving a flexible declarative API.'], ['Why useId?', 'Generates SSR-safe unique ids for label/aria wiring.']],
+    exercise: 'Create a reusable AddressSection (address line, State→City, pincode) that works with any field-name prefix.',
+    next: 'Day 32 - Dynamic field rendering, configuration-driven UI',
+    commit: 'Day 31: Add advanced reusable form components',
+  },
+}

@@ -2,7 +2,7 @@
 
 | Commit | Date | Message |
 |---|---|---|
-| b3d033f | 2026-10-08 | Day 30: Add motor policy creation |
+| e605554 | 2026-10-08 | Day 30: Add motor policy creation |
 | 5a64ad5 | 2026-10-08 | Day 29: Add motor proposal creation |
 | 8a9b4c3 | 2026-10-08 | Day 28: Add motor premium calculation |
 | b30a138 | 2026-10-08 | Day 27: Add motor vehicle, customer and insurance details |
