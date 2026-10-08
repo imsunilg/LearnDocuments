@@ -2,6 +2,7 @@
 
 | Commit | Date | Message |
 |---|---|---|
+| cf21ced | 2026-10-08 | Day 18: Add protected routes and auth context |
 | a87109a | 2026-10-08 | Day 17: Add login with JWT |
 | 7a12466 | 2026-10-08 | Day 16: Add application context |
 | 2792912 | 2026-10-08 | Day 15: Add custom hooks for customers, API and debounce |

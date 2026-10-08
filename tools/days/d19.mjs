@@ -1,0 +1,27 @@
+export default {
+  19: {
+    title: 'Role-based UI',
+    react: 'Permission-based rendering, wrapper component (<Can>), hooks for permissions, authorization route guards',
+    insurance: 'Sidebar, buttons and routes adapt to the signed-in role (Admin, Underwriter, Agent, ClaimsOfficer, Viewer)',
+    backend: 'Permission claims in the JWT; [HasPermission] attribute + dynamic policy provider; PermissionFilter maps GET/POST/PUT/DELETE → view/create/edit/delete for CRUD controllers (403 ProblemDetails)',
+    database: 'role_permissions table + seed mapping; fn_user_get_by_username now returns the permission list',
+    objectives: ['Render UI by permission', 'Guard routes by permission', 'Understand that UI hiding is not security', 'Enforce the same rules in the API'],
+    concepts: [
+      { name: 'Permissions over roles', why: 'Roles change; code should ask "can this user delete customers?" not "is this user an Admin?".', what: 'Roles are bags of permissions (customers.delete). UI/API check permissions.', how: 'JWT carries the permissions; usePermissions().can("customers.delete").', where: 'usePermissions, role_permissions table.' },
+      { name: 'Wrapper component', why: 'Conditional JSX repeated everywhere is noisy.', what: '`<Can permission="x" fallback={...}>children</Can>`', how: 'Reads usePermissions and renders children or the fallback.', where: 'components/common/Can.tsx.' },
+      { name: 'Authorization route guard', why: 'Typing /customers/new in the address bar must not bypass hidden buttons.', what: 'RequirePermission layout route renders AccessDeniedPage when permission is missing.', where: 'app/routes/RequirePermission.tsx.' },
+      { name: 'Defence in depth', why: 'Anything in the browser can be altered.', what: 'The API re-checks every request (403).', how: 'PermissionFilter / [HasPermission].', where: 'Common/PermissionAuthorization.cs.' },
+    ],
+    built: ['usePermissions, Can, RequirePermission, AccessDeniedPage', 'Permission-aware Sidebar, customers table and buttons', 'API permission filter + policy provider', 'role_permissions + seed'],
+    walkthrough: 'Log in as `viewer` (Pass@123): the sidebar shows view-only modules, the customers table has no Edit/Delete and /customers/new shows Access denied. Calling POST /api/customers with the viewer token returns 403.',
+    api: ['403 ProblemDetails "Missing permission: customers.create" when a permission is absent'],
+    db: ['tables/011_role_permissions.sql', 'seed/060_role_permissions.sql', 'fn_user_get_by_username returns permissions[]'],
+    learned: ['UI permission checks are UX; API checks are security', 'Permission strings are a stable contract between DB, API and UI'],
+    approach: 'Permission-centric RBAC lets admins reshape roles (Day 21) without code changes.',
+    mistakes: ['Checking role names in components', 'Trusting hidden buttons', 'Forgetting to guard direct URLs'],
+    interview: [['RBAC vs ABAC?', 'RBAC grants by role; ABAC evaluates attributes (owner, amount, region).'], ['Why check permissions twice?', 'The UI is for usability; the server is the only trusted enforcement point.']],
+    exercise: 'Hide the Delete button for non-admin roles (done through customers.delete) - now hide the Delete button also for customers whose KYC is Verified unless the user is an Admin.',
+    next: 'Day 20 - User Management',
+    commit: 'Day 19: Add role-based UI rendering',
+  },
+}
