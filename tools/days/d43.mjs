@@ -1,0 +1,27 @@
+export default {
+  43: {
+    title: 'Endorsement',
+    react: 'Diff display (before/after), conditional workflows, a form whose fields change with a selected type (shouldUnregister + keyed form), approval dialogs',
+    insurance: 'Endorsement requests (change address, add nominee, change vehicle) with pro-rata premium adjustment, underwriter approval and a before/after comparison',
+    backend: 'EndorsementsController: GET list/get (generated), POST /api/endorsements, POST /{id}/decision (policies.issue)',
+    database: 'endorsements table, fn_json_diff, fn_endorsement_create (validation, diff, pro-rata re-pricing), fn_endorsement_decide (applies the change to policy_details + history)',
+    objectives: ['Model mid-term changes', 'Show what changed', 'Re-price a policy pro-rata', 'Apply an approved change atomically'],
+    concepts: [
+      { name: 'Endorsement (insurance)', why: 'Policies change after issue - a new car, a new address, a nominee.', what: 'A controlled change request: validated, priced (pro-rata additional premium or refund), approved by underwriting, then applied to the policy file and recorded in history.', where: 'fn_endorsement_create/decide.' },
+      { name: 'Pro-rata adjustment', why: 'Only the remaining period is affected.', what: '(new total − old total) × remaining days ÷ policy days; negative = refund.', where: 'fn_endorsement_create (VEHICLE_CHANGE).' },
+      { name: 'Diff view', why: 'Approvers decide on differences, not on whole documents.', what: 'fn_json_diff returns [{field, from, to}]; DiffView shows struck-through old values and highlighted new ones.', where: 'components/common/DiffView.tsx.' },
+      { name: 'Type-driven form', why: 'Each endorsement type has different inputs.', what: 'The form is keyed by type and uses shouldUnregister so fields of the previous type never leak into the payload; validation schema is picked by type.', where: 'EndorsementRequestModal.' },
+    ],
+    built: ['Endorsements tab on the policy page', 'Endorsement approval queue page', 'EndorsementRequestModal, EndorsementsList, DiffView', 'Endorsement DB objects and API'],
+    walkthrough: 'Policy → Endorsements → Request: change the vehicle of a motor policy. The list shows a refund (negative adjustment); an underwriter opens it, sees the before/after table and approves - the Insured details tab now shows the new vehicle.',
+    api: ['GET /api/endorsements?policyId=&status=', 'POST /api/endorsements { policyId, type, effectiveDate, data, remarks }', 'POST /api/endorsements/{id}/decision { approve, remarks }'],
+    db: ['tables/120_endorsements.sql', 'functions/350_endorsements.sql', 'generated vw_endorsements'],
+    learned: ['Approvals need a clear before/after', 'Business rules: one pending endorsement per policy; effective date inside the policy period'],
+    approach: 'The policy is immutable after issue; endorsements are the audited way to change it.',
+    mistakes: ['Editing policy rows directly', 'Charging the full annual difference instead of pro-rata', 'Letting stale fields from another endorsement type into the request'],
+    interview: [['How do you display changes between two versions?', 'Compute a structured diff on the server and render before/after with clear markers.']],
+    exercise: 'Show a before/after comparison (done) - add a "Customer view" that shows only the changed fields in plain language.',
+    next: 'Day 44 - Claims Management',
+    commit: 'Day 43: Add endorsement management',
+  },
+}
