@@ -26,7 +26,7 @@ const w = (name, text) => writeFileSync(join(dir, name), text.trim() + '\n')
 
 let changed = ''
 try {
-  execSync('git add -A', { cwd: root })
+  if (!process.env.PARTIAL_STAGE) execSync('git add -A', { cwd: root })
   changed = execSync('git diff --cached --name-status', { cwd: root }).toString()
 } catch { /* no git */ }
 const created = [], modified = []

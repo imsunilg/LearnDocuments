@@ -10,7 +10,15 @@ const root = join(here, '..', '..')
 const n = Number(process.argv[2])
 const run = (c) => execSync(c, { cwd: root, stdio: ['ignore', 'pipe', 'inherit'] }).toString()
 
-execSync(`node "${join(here, 'gen-day.mjs')}" ${n}`, { cwd: root, stdio: 'inherit' })
+// Optional extra args = only these paths belong to this day (others stay unstaged for later days).
+const paths = process.argv.slice(3)
+const partial = paths.length > 0
+if (partial) run(`git add -- ${paths.map((p) => `"${p}"`).join(' ')}`)
+execSync(`node "${join(here, 'gen-day.mjs')}" ${n}`, {
+  cwd: root,
+  stdio: 'inherit',
+  env: { ...process.env, ...(partial ? { PARTIAL_STAGE: '1' } : {}) },
+})
 
 const days = {}
 for (const f of readdirSync(join(here, 'days')).filter((x) => x.endsWith('.mjs')))
@@ -23,7 +31,8 @@ writeFileSync(
   join(root, 'LearnDocuments', 'GitHistory.md'),
   `# Git history\n\n| Commit | Date | Message |\n|---|---|---|\n${rows.map((r) => `| ${r[0]} | ${r[1]} | ${r.slice(2).join('|')} |`).join('\n')}\n`,
 )
-run('git add -A')
+if (partial) run(`git add -- LearnDocuments`)
+else run('git add -A')
 const msg = days[n].commit
 const body = 'Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>'
 writeFileSync(join(root, '.git', 'COMMIT_MSG_TMP'), `${msg}\n\n${body}\n`)
