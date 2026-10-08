@@ -2,6 +2,7 @@
 
 | Commit | Date | Message |
 |---|---|---|
+| 8a9b4c3 | 2026-10-08 | Day 28: Add motor premium calculation |
 | b30a138 | 2026-10-08 | Day 27: Add motor vehicle, customer and insurance details |
 | 13e9c07 | 2026-10-08 | Day 26: Add motor insurance module |
 | 69db9f9 | 2026-10-08 | Day 25: Add master data management |

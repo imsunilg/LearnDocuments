@@ -1,0 +1,28 @@
+export default {
+  29: {
+    title: 'Motor: proposal creation',
+    react: 'Submit flows, form draft saving (autosave + restore), edit mode from saved data, status timeline component, optimistic-UI concepts',
+    insurance: 'Create / save-draft / submit motor proposals; edit drafts; underwriter review, approve, reject; status timeline',
+    backend: 'ProposalsController writes (POST/PUT/submit/decision/cancel/timeline); FluentValidation; decision endpoint requires policies.issue',
+    database: 'fn_proposal_save (recalculates premium, upserts vehicle), fn_proposal_submit, fn_proposal_change_status (workflow + history), fn_status_history_*',
+    objectives: ['Model a workflow in the database', 'Never trust client-side prices', 'Autosave long forms', 'Render history as a timeline'],
+    concepts: [
+      { name: 'Workflow / state machine', why: 'A proposal can only move along legal paths.', what: 'Draft → Submitted → Under Review → Approved/Rejected → Issued; Cancelled from most states. fn_proposal_transition_allowed encodes the table; every change writes status_history.', where: '310_proposals.sql.' },
+      { name: 'Server-authoritative pricing', why: 'A modified browser could send a cheaper premium.', what: 'The API ignores any premium from the client; fn_proposal_save recalculates and stores the breakup.', where: 'fn_proposal_save.' },
+      { name: 'Draft autosave', why: 'Long forms get lost on refresh.', what: 'useFormDraft debounces the form values into localStorage; a banner offers Restore/Discard; cleared after a successful save.', where: 'hooks/useFormDraft.ts, MotorQuotePage.' },
+      { name: 'Optimistic UI (concept)', why: 'Make actions feel instant.', what: 'Update the screen before the server confirms and roll back on failure. We keep pessimistic updates for workflow actions (money/legal state) and introduce optimistic updates on Day 39 for safe toggles.', where: 'Day 39.' },
+      { name: 'Reverse mapping', why: 'Edit screens need the saved JSON back as form values.', what: 'motorFormFromProposal mirrors buildMotorDetails.', where: 'motorDetails.ts.' },
+    ],
+    built: ['Save draft / Submit proposal buttons', 'Edit draft route', 'ProposalDetailsPage with Timeline and decision dialogs', 'Timeline and DetailsView components', 'proposalApi write methods'],
+    walkthrough: 'Agent saves a draft (status Draft, history row "Proposal created") and submits it (Submitted). An underwriter opens the proposal, starts a review, then approves or rejects with remarks. Each step appears in the timeline.',
+    api: ['POST /api/proposals', 'PUT /api/proposals/{id} (drafts only)', 'POST /api/proposals/{id}/submit', 'POST /api/proposals/{id}/decision {decision: review|approve|reject, remarks}', 'POST /api/proposals/{id}/cancel', 'GET /api/proposals/{id}/timeline'],
+    db: ['functions/310_proposals.sql'],
+    learned: ['Business rules belong in one authoritative place (DB function)', 'History tables make audits and timelines trivial'],
+    approach: 'A strict workflow with history is how real insurers prove who decided what, and when.',
+    mistakes: ['Letting the client set status or price', 'Editing submitted proposals', 'Not recording who made each transition'],
+    interview: [['Why recalculate the premium on the server?', 'The client cannot be trusted; the server stores the authoritative figure.'], ['What is optimistic UI?', 'Showing the expected result immediately and reconciling when the server responds.']],
+    exercise: 'Show the proposal status timeline (done) - add an icon per status and a duration "in this status for 2 days" label.',
+    next: 'Day 30 - Motor: policy creation',
+    commit: 'Day 29: Add motor proposal creation',
+  },
+}
