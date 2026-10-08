@@ -1,0 +1,25 @@
+export default {
+  36: {
+    title: 'Tabs, accordion, stepper, wizard',
+    react: 'Building tab/accordion/stepper components, a wizard as a reducer-based state machine, accessibility basics (ARIA roles, roving tabindex, aria-expanded/controls)',
+    insurance: 'Navigation building blocks for the proposal wizard (Day 37) and the policy details page (Day 41)',
+    objectives: ['Build accessible interactive widgets from scratch', 'Model a multi-step flow as a state machine', 'Know the WAI-ARIA patterns for tabs and disclosures'],
+    concepts: [
+      { name: 'Compound Tabs', why: 'Tabs are a family: list, tab, panel share the selected id.', what: '<Tabs><Tabs.List><Tabs.Tab/></Tabs.List><Tabs.Panel/></Tabs> with context.', how: 'role=tablist/tab/tabpanel, aria-selected, aria-controls/labelledby; roving tabindex; ← → Home End keys.', where: 'components/common/Tabs.tsx.' },
+      { name: 'Accordion', why: 'Long content in compact form.', what: 'Header buttons with aria-expanded and aria-controls; panels toggled with the hidden attribute.', where: 'Accordion.tsx.' },
+      { name: 'Wizard as a state machine', why: 'Scattered setState calls hide the legal transitions.', what: 'wizardReducer(state, event): next/back/goTo/complete/error/reset. You can only jump forward up to the furthest step reached; per-step validate() decides whether Next is allowed.', where: 'Wizard.tsx.' },
+      { name: 'Stepper', why: 'Orientation: where am I, what is done, what failed?', what: 'Presentational list with aria-current="step"; states done/current/error/todo.', where: 'Stepper.tsx.' },
+    ],
+    built: ['Tabs, Accordion, Stepper, Wizard', 'UI kit gallery page (Administration → UI kit)'],
+    walkthrough: 'Open Administration → UI kit → Wizard & Stepper: Next is blocked until the step validates; a failed step turns red in the stepper; completed steps can be revisited.',
+    tsNotes: ['Static properties on function components (Tabs.List)', 'Discriminated union for WizardEvent with an exhaustive switch'],
+    bestPractices: ['Prefer native elements (<button>) over div+onClick', 'Use hidden/aria-expanded rather than hiding with CSS only'],
+    learned: ['A reducer makes a flow explicit and unit-testable', 'Keyboard support is part of the component, not an extra'],
+    approach: 'Phase 4 ends with a wizard, so the navigation primitives come first.',
+    mistakes: ['Clickable divs without roles or keyboard handling', 'Letting users skip validation by clicking later steps'],
+    interview: [['What is roving tabindex?', 'Only the active item has tabindex=0; arrow keys move focus among items, so the whole group is one tab stop.'], ['Why a reducer for a wizard?', 'Explicit events and transitions; easy to test.']],
+    exercise: 'Add step-completion indicators (done: ✓ and ! in the stepper) - add a progress percentage bar above the stepper.',
+    next: 'Day 37 - Insurance Proposal Wizard',
+    commit: 'Day 36: Add tabs, accordion, stepper and wizard components',
+  },
+}
