@@ -1,0 +1,26 @@
+export default {
+  34: {
+    title: 'Travel Insurance',
+    react: 'Date-range handling (cross-field date rules), conditional sections, repeating traveller groups, linking a form field to a common field (startDateField)',
+    insurance: 'Travel quote + proposal: destination zone, trip dates (max 180 days), 1-6 travellers with age-based pricing, adventure-sports add-on',
+    backend: 'No new endpoints - the generic proposal/premium APIs serve Travel; policy end date = trip return date',
+    database: 'fn_premium_travel (zone × trip-length × age bands, adventure +25%, group discount), travel rating rows, TRAVEL field configuration incl. the travellers group, relaxed policy date check (one-day trips)',
+    objectives: ['Validate date ranges across fields', 'Show/hide sections conditionally', 'Price per person and sum up', 'Let a product define its own policy period'],
+    concepts: [
+      { name: 'Date ranges', why: 'A return date before departure is a classic bug source.', what: 'Config rule {afterField:"trip.startDate", maxDays:180} - validated in the browser (validateFields) and re-checked in fn_premium_travel.', where: 'dynamic-form/logic.ts, fn_premium_travel.' },
+      { name: 'Per-traveller pricing', why: 'Premium depends on each traveller\'s age at departure.', what: 'The SQL function loops over details.travellers, applies an age band factor, sums the base and then applies add-ons/discounts.', where: 'fn_premium_travel.' },
+      { name: 'startDateField', why: 'For travel the policy period IS the trip - asking for a second start date invites inconsistency.', what: 'DynamicQuoteConfig.startDateField = "trip.startDate" hides the generic input and mirrors the departure date.', where: 'DynamicQuotePage.' },
+      { name: 'Repeating groups', why: 'Each traveller has name, DOB, passport, relationship.', what: 'type "group" with min/max items; add/remove buttons; per-item validation including minAge/maxAge.', where: 'GroupRenderer, product_field_config (parent_key).' },
+    ],
+    built: ['Travel routes and pages (config only)', 'TRAVEL form definition', 'fn_premium_travel + rates', 'End date from trip.endDate when issuing the policy'],
+    walkthrough: 'Travel → New quote → destination Europe, 10 days, two travellers aged 34 and 7: the premium is Σ (cover × rate × 0.10 trip-length share × 1.8 zone × age factor). Changing the return date to 200 days later shows the 180-day rule.',
+    db: ['seed/161_product_fields_travel.sql', 'seed/152_premium_rates_travel.sql', 'functions/302_premium_travel.sql', 'ck_policies_dates relaxed to >='],
+    learned: ['Product-specific policy periods belong in the issuing function', 'Rules that exist in the UI must also exist in the pricing function'],
+    approach: 'Travel shows the engine handling lists, dates and per-item rules without any travel-specific React code.',
+    mistakes: ['Computing age at today instead of at departure', 'Allowing the return date before departure'],
+    interview: [['How do you validate that one date is after another?', 'A cross-field rule evaluated with both values (here afterField), mirrored on the server.']],
+    exercise: 'Add multi-traveller support with age-based premium (done) - add an "infant discount" (age < 2) as a new rate row and function branch.',
+    next: 'Day 35 - Health Insurance',
+    commit: 'Day 34: Add travel insurance',
+  },
+}
