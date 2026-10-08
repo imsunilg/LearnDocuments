@@ -2,6 +2,7 @@
 
 | Commit | Date | Message |
 |---|---|---|
+| 530c323 | 2026-10-08 | Day 52: Add route-level code splitting |
 | c64af2e | 2026-10-08 | Day 51: Add performance optimisation lab and memoised table rows |
 | 13ac07a | 2026-10-08 | Day 50: Add error boundaries, correlation ids and audit logs |
 | 1a7affe | 2026-10-08 | Day 49: Add charts and live dashboard |

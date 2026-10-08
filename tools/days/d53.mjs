@@ -1,0 +1,27 @@
+﻿export default {
+  53: {
+    title: 'Security Hardening',
+    react: 'React escapes text by default (XSS-safe), never use dangerouslySetInnerHTML with user data, Content-Security-Policy for the production build, tokens kept in memory not localStorage',
+    insurance: 'Policy and KYC data is personal data: protect it in transit, at rest in storage rules, and from abuse',
+    backend: 'SecurityHeadersMiddleware (nosniff, DENY framing, no-referrer, strict CSP, no-store, HSTS in production), fixed-window rate limiting (global per IP + strict on login) with 429 ProblemDetails and Retry-After',
+    database: 'No change (account lock-out after repeated failures already exists in fn_auth_login)',
+    objectives: ['Add security headers', 'Slow brute-force attacks', 'Prove user text cannot execute', 'Know the OWASP basics for a web app'],
+    concepts: [
+      { name: 'Security headers', why: 'They tell the browser to refuse risky behaviour even if our code has a bug.', what: 'nosniff stops MIME guessing, X-Frame-Options blocks clickjacking, CSP default-src none blocks any script/resource from an API response, no-store prevents caching personal data.', where: 'SecurityHeadersMiddleware.' },
+      { name: 'Rate limiting', why: 'Unlimited login attempts make password guessing cheap.', what: '10 login requests per minute per IP, 300 requests per minute overall; the 11th gets 429 with Retry-After. Limits come from configuration.', where: 'RateLimitingExtensions, appsettings.' },
+      { name: 'XSS', why: 'Injected script can steal sessions or act as the user.', what: 'React escapes {value} so <script> is shown as text. Danger comes from dangerouslySetInnerHTML, href="javascript:" and building HTML strings. A production CSP (script-src self) is the second layer.', where: 'vite.config.ts cspPlugin, XSS test below.' },
+      { name: 'Defence in depth', why: 'Any single control can fail.', what: 'Validation (client + server), parameterised SQL, upload checks, permission checks on every endpoint, audit log, headers, rate limits.', where: 'Whole stack.' },
+    ],
+    built: ['Security headers middleware', 'Rate limiter on the API and on login', 'Production CSP via Vite plugin', 'Playwright XSS check'],
+    walkthrough: 'Call the API and read the response headers. Fire 12 bad logins within a minute and watch the last ones return 429. Upload a document whose description is <img onerror=alert(1)> and see it rendered as plain text with no alert.',
+    api: ['429 Too many requests (ProblemDetails + Retry-After)'],
+    db: [],
+    learned: ['Headers are cheap, high-value hardening', 'Rate-limit the expensive and the sensitive endpoints', 'Escaping by default is React\'s main XSS defence'],
+    approach: 'Assume every input is hostile and every layer can fail.',
+    mistakes: ['Storing JWTs in localStorage', 'dangerouslySetInnerHTML with user content', 'Echoing unvalidated headers', 'Committing real secrets (the dev DB password lives only in appsettings.Development.json)'],
+    interview: [['How does React protect against XSS and where can you still get it wrong?', 'JSX escapes interpolated values. It is still possible via dangerouslySetInnerHTML, javascript: URLs in href/src, and injecting into eval-like APIs; add a CSP as a safety net.']],
+    exercise: 'Add a per-user limiter on POST /api/payments/pay and test it.',
+    next: 'Day 54 - Unit Testing',
+    commit: 'Day 53: Add security hardening',
+  },
+}
