@@ -2,6 +2,7 @@
 
 | Commit | Date | Message |
 |---|---|---|
+| 12efac5 | 2026-10-08 | Day 56: Improve accessibility and responsive design |
 | e35fd36 | 2026-10-08 | Day 55: Add integration tests (MSW and WebApplicationFactory) |
 | 0ce1dc0 | 2026-10-08 | Day 54: Add unit tests (Vitest and xUnit) |
 | a4ff8d0 | 2026-10-08 | Day 53: Add security hardening |

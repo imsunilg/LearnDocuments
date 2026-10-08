@@ -1,0 +1,27 @@
+﻿export default {
+  57: {
+    title: 'Environment Configurations and Production Build',
+    react: 'Vite modes and .env files (development / staging / production), import.meta.env, build-time define for version and build time, no source maps in production, CSP computed from the API origin',
+    insurance: 'The same code must run safely in dev, staging and production without secrets in the repository',
+    backend: 'appsettings.{Environment}.json layering, environment-variable overrides (double underscore), StartupChecks that refuse to start with placeholder secrets, optional forwarded-headers support behind a reverse proxy',
+    database: 'No change (connection string comes from ConnectionStrings__LearnInsuranceDb outside development)',
+    objectives: ['Separate config from code', 'Keep secrets out of git', 'Fail fast on bad configuration', 'Produce a verified production bundle'],
+    concepts: [
+      { name: 'Configuration layers', why: 'Each environment needs different values.', what: 'appsettings.json (defaults) < appsettings.{Env}.json < environment variables < command line. Nested keys map with double underscores: Jwt__Key, ConnectionStrings__LearnInsuranceDb, Cors__AllowedOrigins__0.', where: 'LearnAPI/appsettings*.json.' },
+      { name: 'Vite env files', why: 'The browser bundle is public, so it can only hold non-secret settings.', what: 'Only VITE_-prefixed variables reach the client. .env.production uses a relative /api so site and API share one origin behind the proxy (also keeps the httpOnly cookie same-site).', where: '.env.development / .env.staging / .env.production.' },
+      { name: 'Fail fast', why: 'A missing secret should stop the deployment, not the first customer request.', what: 'StartupChecks lists every problem at once: placeholder connection string, short or DEV-ONLY JWT key, localhost CORS origin in production.', where: 'StartupChecks.cs + tests.' },
+      { name: 'Build metadata', why: 'Bug reports need the exact build.', what: 'version from package.json and build time are injected with define and shown in the footer; production builds ship without source maps.', where: 'vite.config.ts, Footer.' },
+    ],
+    built: ['.env.production and .env.staging, build:staging script', 'appsettings.Production/Staging', 'StartupChecks with unit tests', 'Forwarded headers option', 'Version in footer'],
+    walkthrough: 'Run the API with ASPNETCORE_ENVIRONMENT=Production and no variables: it exits listing every missing setting. Run npm run build and inspect dist/: no .map files, CSP meta tag present.',
+    api: [],
+    db: [],
+    learned: ['Config is layered, secrets come from the environment', 'Validate configuration at startup', 'Production bundles ship without source maps'],
+    approach: 'Twelve-factor: strict separation of config from code.',
+    mistakes: ['Committing passwords (the local dev password lives only in appsettings.Development.json)', 'Putting secrets in VITE_ variables', 'Different code paths per environment instead of different config'],
+    interview: [['Where do secrets go in a React app?', 'Never in the bundle: everything in the browser is public. Secrets live on the server; the client only gets public identifiers and short-lived tokens.']],
+    exercise: 'Add a /api/version endpoint returning the assembly version and environment name (no secrets).',
+    next: 'Day 58 - Docker and docker-compose',
+    commit: 'Day 57: Add environment configs and production build checks',
+  },
+}
