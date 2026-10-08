@@ -1,0 +1,26 @@
+export default {
+  35: {
+    title: 'Health Insurance',
+    react: 'Repeating groups, NESTED arrays in forms (members → conditions), group-scoped showIf, plan-type radio driving pricing',
+    insurance: 'Health quote + proposal: 1-6 members, pre-existing conditions, individual vs family floater, 1-3 year terms',
+    backend: 'No new endpoints; HEALTH plugs in via fn_premium_health',
+    database: 'fn_premium_health (age bands, floater pricing on the eldest member + per-member loading, pre-existing loading, term discount), HEALTH field definition with a nested group, recursive fn_product_field_tree',
+    objectives: ['Handle arrays inside arrays', 'Scope visibility rules to a group item', 'Price one cover per member vs one shared cover'],
+    concepts: [
+      { name: 'Nested field arrays', why: 'Each member can have several conditions.', what: 'GroupRenderer inside GroupRenderer: useFieldArray on `details.members.0.conditions`. showIf of a child is evaluated in its item scope (`preExisting` of THAT member).', where: 'registry.tsx, logic.ts (scope paths).' },
+      { name: 'Recursive configuration', why: 'The server must return nested groups of any depth.', what: 'fn_product_field_tree(type, parent) calls itself for every group field.', where: 'functions/330_product_fields.sql.' },
+      { name: 'Insurance maths (health)', why: 'Know what you price.', what: 'Individual: Σ(SI × rate × age factor) + 15% loading per flagged member. Floater: one SI × rate × eldest member factor + 20% per extra member (+15% once if anyone is flagged). Multi-year terms get a discount and multiply.', where: 'fn_premium_health.' },
+      { name: 'Radio-driven behaviour', why: 'Floater vs individual changes the whole calculation and the sum insured shown.', what: 'cover.planType is a radio in the configuration; the SQL function branches on it.', where: 'product_field_config, fn_premium_health.' },
+    ],
+    built: ['Health routes and pages (config only)', 'HEALTH form definition with nested conditions', 'fn_premium_health + rating rows', 'Recursive field tree'],
+    walkthrough: 'Health → New quote: add two members, tick "pre-existing condition" for one: the Conditions sub-section appears for that member only. Switch to Family floater and the premium recalculates on the eldest member.',
+    db: ['functions/303_premium_health.sql', 'seed/162_product_fields_health.sql', 'seed/153_premium_rates_health.sql', 'functions/330 (recursive tree)'],
+    learned: ['Scope strings (details.members.0.conditions) make nested forms tractable', 'Recursion belongs in the data function, not the UI'],
+    approach: 'After three product lines the engine proved itself: Health needed no new React logic at all.',
+    mistakes: ['Using array index as identity when removing items (use the field array id)', 'Evaluating showIf against the root instead of the item scope'],
+    interview: [['How do you build nested dynamic arrays in react-hook-form?', 'useFieldArray at each level with fully qualified names like members.0.conditions.'], ['Why is recursion in SQL written in plpgsql here?', 'A SQL-language function cannot reference itself while it is being created.']],
+    exercise: 'Add a family floater vs individual toggle (done as a radio) - add a "senior citizen" (60+) warning banner that appears when any member is older than 60.',
+    next: 'Day 36 - Tabs, accordion, stepper, wizard',
+    commit: 'Day 35: Add health insurance',
+  },
+}
