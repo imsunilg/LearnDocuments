@@ -2,6 +2,7 @@
 
 | Commit | Date | Message |
 |---|---|---|
+| 91884f1 | 2026-10-08 | Day 58: Add Docker and docker-compose |
 | 46131d3 | 2026-10-08 | Day 57: Add environment configs and production build checks |
 | 12efac5 | 2026-10-08 | Day 56: Improve accessibility and responsive design |
 | e35fd36 | 2026-10-08 | Day 55: Add integration tests (MSW and WebApplicationFactory) |
