@@ -2,6 +2,7 @@
 
 | Commit | Date | Message |
 |---|---|---|
+| 00273d5 | 2026-10-08 | Day 41: Add policy details |
 | ab1ea94 | 2026-10-08 | Day 40: Add advanced policy search |
 | 7b47453 | 2026-10-08 | Day 39: Add mutations and optimistic updates |
 | 9c7f678 | 2026-10-08 | Day 38: Introduce TanStack Query |

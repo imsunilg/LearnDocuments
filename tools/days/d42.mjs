@@ -1,0 +1,28 @@
+export default {
+  42: {
+    title: 'Policy Renewal',
+    react: 'Date-driven UI and derived states (Due / Overdue / urgency badges), window chips as URL filters, a quote dialog with a premium comparison, mutations that invalidate several caches',
+    insurance: 'Renewals due list with 7/15/30/60/90-day windows; quote & renew dialog showing old vs new premium, NCB step-up and IDV changes; decline with reason',
+    backend: 'RenewalsController: GET /api/renewals, GET /{policyId}/quote, POST /{policyId}/renew, POST /{policyId}/decline',
+    database: 'renewals table; vw_renewals (window of ±90 days, derived renewal_status); fn_renewal_get_due, fn_next_ncb, fn_renewal_quote, fn_renewal_create (one transaction), fn_renewal_decline',
+    objectives: ['Derive status from dates instead of storing it', 'Compare two prices clearly', 'Run a multi-step server operation atomically', 'Invalidate more than one cache after a mutation'],
+    concepts: [
+      { name: 'Derived (computed) status', why: 'A stored "overdue" flag is wrong the next day.', what: 'renewal_status is computed in the view from end_date and the existence of a child policy: Renewed / Declined / Overdue / Due. The UI derives urgency colours from daysToExpiry.', where: 'vw_renewals, RenewalsPage.Urgency.' },
+      { name: 'Renewal quote', why: 'Customers want to see what changes before paying.', what: 'fn_renewal_quote rebuilds the proposal details from the policy sections, steps the motor NCB up one slab (reset to 0 if a claim exists), refreshes the IDV for the older vehicle, and prices it with the normal calculator.', where: 'fn_renewal_quote.' },
+      { name: 'Insurance concept: NCB', why: 'No Claim Bonus rewards claim-free years.', what: '0 → 20 → 25 → 35 → 45 → 50 % discount on own-damage premium; any claim resets it.', where: 'fn_next_ncb.' },
+      { name: 'Quote freshness', why: 'A quote is a point-in-time price.', what: 'useRenewalQuote uses staleTime 0 / gcTime 0 so the dialog always fetches a new quote.', where: 'renewalQueries.ts.' },
+      { name: 'Invalidate several caches', why: 'Renewing changes the due list AND creates a policy.', what: 'Promise.all([invalidate renewals, invalidate policies]) so every screen is consistent.', where: 'useRenewPolicy.' },
+    ],
+    built: ['RenewalsPage + quote dialog + decline dialog', 'renewalQueries (query + mutations)', 'Renewal tables, view and functions', 'Link from Policies'],
+    walkthrough: 'Policies → Renewals due: Vikram Singh\'s policy expires in 6 days (red badge). Quote & renew shows the premium dropping because NCB goes from 45% to 50%; confirm and you land on the new policy, linked to the old one.',
+    api: ['GET /api/renewals?days=30&renewalStatus=Due&productTypeCode=MOTOR', 'GET /api/renewals/{policyId}/quote', 'POST /api/renewals/{policyId}/renew', 'POST /api/renewals/{policyId}/decline { remarks }'],
+    db: ['tables/110_renewals.sql', 'functions/340_renewals.sql'],
+    learned: ['Computed status avoids stale data', 'Quote → confirm is a classic two-step mutation pattern'],
+    approach: 'Renewal revenue is the lifeblood of an insurer; the screen must make the next call to the customer obvious.',
+    mistakes: ['Storing "overdue" as a column', 'Reusing yesterday\'s cached quote', 'Renewing without linking the new policy to the old one'],
+    interview: [['Why derive instead of store status?', 'Time-based states change without any write; deriving keeps them always correct.'], ['How do you keep an operation atomic across several tables?', 'Run it inside one database function/transaction.']],
+    exercise: 'Add the 30/15/7-day due filters (done as chips) - add a "Send reminder" action that records notified_date.',
+    next: 'Day 43 - Endorsement',
+    commit: 'Day 42: Add policy renewal',
+  },
+}
