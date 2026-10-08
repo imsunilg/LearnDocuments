@@ -1,0 +1,27 @@
+export default {
+  20: {
+    title: 'User Management',
+    react: 'Feature-folder structure at scale, reuse of DataTable/hooks/dialogs, generic API factory, modal forms with checkbox chips',
+    insurance: 'Administration → Users: list, search, create, edit, assign roles, activate/deactivate',
+    backend: 'UsersController (password hashed with bcrypt, cannot deactivate yourself), RolesController (read), FluentValidation password policy',
+    database: 'vw_users (roles aggregated, no password hash), fn_user_get_all/get_by_id/set_active/delete (generated), fn_user_create/update/set_roles/set_password (hand-written)',
+    objectives: ['Scale the feature-folder pattern', 'Reuse building blocks instead of rebuilding', 'Model many-to-many (user ↔ roles) in a form', 'Protect admin actions (self-deactivation, password hashing)'],
+    concepts: [
+      { name: 'Feature folders', why: 'As modules multiply, grouping by type (all components together) becomes unmanageable.', what: 'features/users contains its page, form modal, schema and API usage; components/ holds only truly shared pieces.', where: 'features/users, features/admin.' },
+      { name: 'createCrudApi factory', why: 'Every module has the same REST shape.', what: 'A generic function returning typed list/get/create/update/setActive/remove.', where: 'services/api/createCrudApi.ts.' },
+      { name: 'Many-to-many in forms', why: 'A user has several roles.', what: 'roleIds: number[] in the form state, toggled with checkbox chips; the API replaces the set transactionally (fn_user_set_roles).', where: 'UserFormModal.' },
+      { name: 'Nested layout routes', why: 'Admin sections share a tab bar.', what: 'AdminLayout renders tabs + <Outlet/>; each tab is a child route behind its own permission.', where: 'router.tsx, AdminLayout.' },
+    ],
+    built: ['UsersPage, UserFormModal, userSchema', 'AdminLayout with permission-filtered tabs', 'userApi/roleApi', 'Users/roles DB views and functions', 'Password policy in FluentValidation and Zod'],
+    walkthrough: 'Sign in as admin → Administration → Users. Creating a user posts to /api/users: the controller hashes the password, builds a JSON payload and calls fn_user_create, which inserts the user and syncs user_roles.',
+    api: ['GET /api/users', 'GET /api/users/{id}', 'POST /api/users', 'PUT /api/users/{id}', 'PATCH /api/users/{id}/status', 'DELETE /api/users/{id}', 'POST /api/users/{id}/reset-password', 'GET /api/roles'],
+    db: ['functions/210_users.sql (hand-written)', 'functions/generated/user.sql, role.sql (generated)', 'Generator now supports custom views and skipping create/update'],
+    learned: ['Reuse is the payoff of the earlier days', 'Never return password hashes from list functions', 'Business rules like "cannot deactivate yourself" live in the API'],
+    approach: 'Admin screens are CRUD plus one twist (roles); composing existing pieces keeps them small.',
+    mistakes: ['Returning password_hash in JSON', 'Letting admins lock themselves out', 'Hashing passwords in the browser'],
+    interview: [['How do you model a many-to-many form field?', 'An array of ids in form state, saved with a replace-set operation on the server.'], ['Why a view for users?', 'To expose only safe columns and aggregated roles.']],
+    exercise: 'Add a "reset password" action (API endpoint exists: POST /api/users/{id}/reset-password) - build the modal that calls it.',
+    next: 'Day 21 - Role Management',
+    commit: 'Day 20: Add user management',
+  },
+}
