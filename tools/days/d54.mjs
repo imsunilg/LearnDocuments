@@ -1,0 +1,27 @@
+﻿export default {
+  54: {
+    title: 'Unit Testing',
+    react: 'Vitest + React Testing Library + user-event + jest-dom in jsdom; test behaviour the user sees (roles, text), not implementation details',
+    insurance: 'Money, validation and workflow rules are guarded by fast tests that run on every change',
+    backend: 'xUnit project LearnAPI/tests/LearnAPI.Tests: gateway rules, payment idempotency, upload validation, correlation/audit/security-header middleware - all with in-memory fakes (no database)',
+    database: 'No change',
+    objectives: ['Write fast, isolated unit tests', 'Test components through the DOM like a user', 'Fake the database and gateway behind interfaces', 'Know what a unit test should not cover'],
+    concepts: [
+      { name: 'Arrange - Act - Assert', why: 'A consistent shape makes tests readable.', what: 'Set up data, perform one action, assert the outcome. One reason to fail per test.', where: 'every test file.' },
+      { name: 'Query by role, not by class', why: 'Tests that mirror how users and assistive tech find things survive refactors and improve accessibility.', what: 'getByRole("columnheader"), getByRole("button", { name }) - if it is hard to query, it is probably hard to use.', where: 'DataTable.test.tsx.' },
+      { name: 'Fakes behind interfaces', why: 'Interfaces (IJsonDb, IFileStorage, IPaymentGateway) let tests replace slow or risky parts.', what: 'FakeJsonDb records calls, CountingGateway counts charges: the idempotency test proves a replayed key charges 0 times.', where: 'TestDoubles.cs, PaymentServiceTests.' },
+      { name: 'Test the rules that cost money', why: 'Coverage is not the goal; protecting risky behaviour is.', what: 'Payment retries, upload validation, CSV injection, error mapping, audit failure isolation.', where: 'All test files.' },
+    ],
+    built: ['Vitest config + setup (jsdom, jest-dom)', '21 frontend unit tests', 'xUnit project with 29 tests', 'npm test script'],
+    walkthrough: 'Run "npm test" in LearnWEB and "dotnet test" in LearnAPI/tests/LearnAPI.Tests. Break a rule (e.g. let the gateway be called on replay) and watch a test fail.',
+    api: [],
+    db: [],
+    learned: ['Pure functions are the cheapest tests', 'Role queries double as accessibility checks', 'Fakes beat mocks for readability'],
+    approach: 'Test behaviour, not implementation; prefer many small tests over few giant ones.',
+    mistakes: ['Asserting on CSS classes or internal state', 'Sharing mutable state between tests', 'Testing library code', 'Snapshot tests of large trees'],
+    interview: [['What is the testing pyramid?', 'Many fast unit tests, fewer integration tests, very few end-to-end tests: cost and flakiness grow as you go up.']],
+    exercise: 'Add a test that a Failed payment gets a new idempotency key on retry (PayDialog).',
+    next: 'Day 55 - Integration Testing',
+    commit: 'Day 54: Add unit tests (Vitest and xUnit)',
+  },
+}
