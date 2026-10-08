@@ -1,0 +1,27 @@
+﻿export default {
+  47: {
+    title: 'File Upload, Download and Preview',
+    react: 'Drag-and-drop zone, upload progress via onUploadProgress, Blob downloads through the authenticated client, object URLs revoked in effect cleanup, preview dialog',
+    insurance: 'Open a scanned policy copy or KYC proof without leaving the file; download the original',
+    backend: 'GET /api/documents/{id}/content (attachment by default, ?inline=true only for pdf/png/jpeg/txt), X-Content-Type-Options: nosniff',
+    database: 'No new objects: the Day 46 documents table already holds everything the viewer needs',
+    objectives: ['Show upload progress', 'Download files that need an Authorization header', 'Preview PDF/image/text safely', 'Avoid object-URL memory leaks'],
+    concepts: [
+      { name: 'Why not <a href>?', why: 'Our access token lives in memory and is sent as a header; links and iframes cannot add headers.', what: 'Fetch the file as a Blob through axios, then use URL.createObjectURL for the iframe/img or a temporary <a download>.', where: 'fetchDocumentBlob, saveBlob.' },
+      { name: 'Object URL cleanup', why: 'Each object URL keeps the blob in memory until revoked.', what: 'The effect cleanup revokes the URL when the dialog closes or the document changes.', where: 'DocumentPreview.' },
+      { name: 'Upload progress', why: 'Large files need feedback.', what: 'axios onUploadProgress reports loaded/total; a progressbar element shows it with aria-valuenow.', where: 'documentQueries, DocumentsPanel.' },
+      { name: 'Inline vs attachment', why: 'Serving an uploaded HTML/SVG inline could run script in our origin.', what: 'Only a short allow-list renders inline; everything else is forced to download, always with nosniff.', where: 'DocumentsController.Content.' },
+    ],
+    built: ['DocumentPreview dialog', 'Dropzone + progress bar in DocumentsPanel', 'Download and Preview buttons'],
+    walkthrough: 'Open a policy → Documents. Drag a PDF onto the zone, upload, click Preview (iframe), then Download (browser saves the original name).',
+    api: ['GET /api/documents/{id}/content?inline=true|false'],
+    db: [],
+    learned: ['Blob + object URL pattern', 'Revoke object URLs', 'Inline only a safe allow-list'],
+    approach: 'Treat every uploaded file as hostile: validate going in, restrict how it is served coming out.',
+    mistakes: ['Putting the JWT in a query string for downloads', 'Forgetting URL.revokeObjectURL', 'Serving user HTML inline'],
+    interview: [['How do you download a file that needs an auth header?', 'Fetch it as a Blob via the authenticated client and save it through an object URL; links cannot send custom headers.']],
+    exercise: 'Support multiple files at once with a progress bar per file.',
+    next: 'Day 48 - Reports Dashboard',
+    commit: 'Day 47: Add file upload, download and preview',
+  },
+}
