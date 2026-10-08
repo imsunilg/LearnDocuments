@@ -1,0 +1,27 @@
+export default {
+  46: {
+    title: 'Document Management',
+    react: 'multipart FormData uploads, a reusable panel dropped onto several details pages, client-side validation that mirrors server rules, permission-gated actions',
+    insurance: 'KYC, policy copies and claim documents attached to customers, policies and claims with a document type, description and audit trail',
+    backend: 'DocumentsController (POST multipart upload, list/get generated, delete), DocumentService (size, extension and magic-byte checks, SHA-256, generated storage key), IFileStorage + LocalFileStorage with path-traversal guard',
+    database: 'documents table (entity_type + entity_id polymorphic link, storage_key, checksum), fn_document_register (validates the target row and document type), vw_documents',
+    objectives: ['Upload files safely', 'Attach one document model to many entities', 'Keep bytes out of the database', 'Validate on both client and server'],
+    concepts: [
+      { name: 'Metadata in DB, bytes in storage', why: 'Large binaries bloat the database and backups.', what: 'The table stores a pointer (storage_key), size and checksum; IFileStorage hides where bytes live (disk now, blob storage later).', where: 'documents table, IFileStorage.' },
+      { name: 'Never trust the file name or Content-Type', why: 'Attackers send "../../x" names and rename .exe to .pdf.', what: 'The file is stored under a generated GUID name; the extension is checked against an allow-list AND the first bytes (magic numbers) must match.', where: 'DocumentService.' },
+      { name: 'Polymorphic attachment', why: 'One upload feature for customers, policies and claims.', what: 'entity_type + entity_id with a CHECK constraint; the function verifies the target exists.', where: 'fn_document_register.' },
+      { name: 'FormData with axios', why: 'JSON cannot carry files.', what: 'Build a FormData and override the default JSON Content-Type so axios adds the multipart boundary.', where: 'documentQueries.' },
+    ],
+    built: ['DocumentsPanel (upload form + list)', 'documentQueries', 'Documents tab on policy, section on customer and claim pages', 'Documents DB objects, API and storage'],
+    walkthrough: 'Open a policy → Documents tab. Try a .exe (rejected instantly), a text file renamed .png (rejected by the server), then a real PDF.',
+    api: ['GET /api/documents?entityType=&entityId=', 'POST /api/documents (multipart: file, entityType, entityId, documentType, description)', 'DELETE /api/documents/{id}'],
+    db: ['tables/150_documents.sql', 'functions/380_documents.sql'],
+    learned: ['Validate content, not just the name', 'Generated storage names defeat path tricks', 'Orphan files must be cleaned when the DB insert fails'],
+    approach: 'Uploads are the most common attack surface of a business app, so every check is layered.',
+    mistakes: ['Saving with the client file name', 'Trusting Content-Type', 'Serving the upload folder statically', 'Setting multipart headers by hand without a boundary'],
+    interview: [['How do you secure file uploads?', 'Allow-list extensions, verify magic bytes, limit size, store outside the web root under generated names, scan if possible, and serve with nosniff and attachment disposition.']],
+    exercise: 'Add duplicate detection: refuse a file whose checksum already exists for the same entity.',
+    next: 'Day 47 - File Upload/Download/Preview',
+    commit: 'Day 46: Add document management',
+  },
+}
