@@ -1,0 +1,27 @@
+export default {
+  22: {
+    title: 'Agent Management',
+    react: 'Reuse patterns; field-definition-driven forms (FieldDef[] → Zod schema → inputs); generic CRUD skeleton',
+    insurance: 'Agents: licence number and expiry, commission %, status, location - create, edit, search, filter, deactivate',
+    backend: 'AgentsController on the generic CRUD base, AgentRequest + FluentValidation',
+    database: 'agents table (code sequence, unique licence/email, check constraints), generated fn_agent_* functions, 12 seeded agents (some expired licences)',
+    objectives: ['Stop hand-writing forms', 'Derive validation from configuration', 'Build modal CRUD quickly with the shared kit'],
+    concepts: [
+      { name: 'Configuration-driven forms', why: 'Ten similar forms = ten chances for inconsistency.', what: 'A FieldDef[] array describes labels, types, rules and sections.', how: 'buildSchema(fields) generates a Zod schema; EntityForm renders inputs; toPayload converts strings to numbers/null.', where: 'components/forms/fieldDefs.ts, EntityForm.tsx, features/agents/agentFields.ts.' },
+      { name: 'Generic modal CRUD', why: 'Simple master data does not need its own pages.', what: 'EntityFormModal<T> creates or edits any entity and shows server errors.', where: 'AgentsPage.' },
+      { name: 'Generated SQL', why: 'CRUD functions are mechanical.', what: 'entities.mjs describes the table; gen-crud.mjs emits view + 6 functions.', where: 'LearnDB/tools.' },
+    ],
+    built: ['FieldDef kit (fieldDefs, EntityForm, EntityFormModal)', 'AgentsPage + agentFields', 'agents table + seed + generated functions', 'AgentsController'],
+    walkthrough: 'agentFields is the single description of the form. Adding a field = one line (plus a column in the table/entity config).',
+    api: ['GET/POST /api/agents, GET/PUT/DELETE /api/agents/{id}, PATCH /api/agents/{id}/status'],
+    db: ['tables/031_agents.sql', 'seed/110_agents.sql', 'generated functions fn_agent_*'],
+    tsNotes: ['Record<string, z.ZodType> for dynamic schemas', 'Generic component EntityFormModal<T extends {id:number}>'],
+    learned: ['Configuration beats copy-paste', 'Keep an escape hatch: complex forms (customers, proposals) stay hand-written'],
+    approach: 'Use generic kits for the 80% simple cases and hand-written forms for the 20% with real logic.',
+    mistakes: ['Over-generalising until the config is a programming language', 'Losing type safety with `any` payloads'],
+    interview: [['When is a config-driven form a bad idea?', 'When fields have complex cross-field logic or custom widgets - write those by hand.'], ['How do you keep client and server rules in sync?', 'Mirror them in Zod, FluentValidation and DB constraints.']],
+    exercise: 'Highlight licences that expire within 30 days (orange) or have already expired (red) in the Licence column.',
+    next: 'Day 23 - Broker Management',
+    commit: 'Day 22: Add agent management',
+  },
+}
