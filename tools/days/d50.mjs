@@ -1,0 +1,27 @@
+﻿export default {
+  50: {
+    title: 'Error Boundaries, Correlation IDs and Audit Logs',
+    react: 'Class-based ErrorBoundary with resetKey, react-router errorElement, a last-resort boundary at the providers, axios interceptor that tags every request',
+    insurance: 'Regulated systems must answer "who changed what and when"; support must find one failing request quickly',
+    backend: 'CorrelationIdMiddleware (accept safe client ids, echo header, log scope, ProblemDetails), AuditMiddleware (POST/PUT/PATCH/DELETE, no bodies), read-only AuditLogsController (admin.view)',
+    database: 'audit_logs table + fn_audit_log_write; generated read functions with filters (user, entity, method, status, correlation id)',
+    objectives: ['Contain render crashes', 'Trace one request across browser, API logs and database', 'Record state changes without storing secrets', 'Never let auditing break a request'],
+    concepts: [
+      { name: 'Error boundary', why: 'An exception while rendering unmounts the whole React tree (white screen).', what: 'A class component with getDerivedStateFromError + componentDidCatch shows a fallback for just its subtree. Event handler and async errors are NOT caught - handle those yourself.', where: 'ErrorBoundary, router errorElement.' },
+      { name: 'Correlation id', why: '"It failed" is not debuggable; one id that follows the request is.', what: 'The browser sends X-Correlation-Id, the API validates and echoes it, logs it in every line, stores it in audit_logs and returns it in error bodies.', where: 'httpClient, CorrelationIdMiddleware.' },
+      { name: 'Audit trail', why: 'Accountability and forensics.', what: 'Who, method, path, entity, id, status, duration, IP. Request bodies are skipped because they contain passwords and personal data.', where: 'AuditMiddleware, AuditLogPage.' },
+      { name: 'Middleware order', why: 'Order decides what each layer can see.', what: 'Correlation first, CORS, Audit OUTSIDE the exception handler so it sees the final status, then exception handler, auth, controllers.', where: 'Program.cs.' },
+    ],
+    built: ['ErrorBoundary + RouteError', 'AuditLogPage under Administration', 'Correlation id on requests and error bodies', 'audit_logs table, middleware and API'],
+    walkthrough: 'Administration → UI kit → Error boundary → crash the widget: only that area is replaced and Try again recovers. Do any change (e.g. edit a customer), then open Administration → Audit log and find it; search by correlation id.',
+    api: ['GET /api/audit-logs?search=&method=&entity=&userName='],
+    db: ['tables/160_audit_logs.sql', 'functions/395_audit.sql'],
+    learned: ['Boundaries per area, not only at the root', 'Validate incoming correlation ids', 'Audit failures must not fail the request'],
+    approach: 'Observability is a feature: build the ids and the trail before you need them.',
+    mistakes: ['Logging request bodies', 'Trusting a client-supplied id blindly (log forging)', 'One global boundary only', 'Expecting boundaries to catch event-handler errors'],
+    interview: [['What does an error boundary not catch?', 'Errors in event handlers, asynchronous code (promises, timers), server rendering and errors thrown in the boundary itself.']],
+    exercise: 'Show the correlation id in toast error messages and add a "copy" button.',
+    next: 'Day 51 - Performance Optimization',
+    commit: 'Day 50: Add error boundaries, correlation ids and audit logs',
+  },
+}
