@@ -1,0 +1,27 @@
+export default {
+  45: {
+    title: 'Payment Management',
+    react: 'Idempotency keys held in a ref, mutations that record failures as data, dialogs with success/failure states, printable receipt, cross-feature query invalidation',
+    insurance: 'Collect premium by UPI/card/netbanking/cheque/cash, mock gateway outcomes, payment history, receipts and refunds; policy shows Paid / Unpaid / Failed',
+    backend: 'PaymentsController: POST /api/payments/pay (needs Idempotency-Key header), POST /{id}/refund (payments.refund), generic list/get; MockPaymentGateway behind IPaymentGateway; PaymentService orchestrates start → gateway → complete',
+    database: 'payments table, fn_payment_start (idempotent), fn_payment_complete (receipt number), fn_payment_refund, fn_policy_amount_due; vw_policies gains amount_paid and payment_status; 16 demo payments',
+    objectives: ['Make a payment safe to retry', 'Separate gateway from business logic', 'Record failures, not just successes', 'Build a printable receipt'],
+    concepts: [
+      { name: 'Idempotency key', why: 'A double-click or network retry must never charge a customer twice.', what: 'The client creates one UUID per payment attempt and sends it as Idempotency-Key. fn_payment_start returns the existing row if the key was seen.', where: 'PayDialog (useRef key), fn_payment_start.' },
+      { name: 'Gateway abstraction', why: 'Real gateways (Razorpay etc.) can be swapped in without touching business code.', what: 'IPaymentGateway has a mock implementation with deterministic failures: fail@upi, card ending 0000 / 1111, bank DOWN.', where: 'Infrastructure/Payments.' },
+      { name: 'Failures are data', why: 'Support needs to see why a payment failed.', what: 'A failed attempt is stored with the gateway message; the dialog offers Try again with a NEW key.', where: 'fn_payment_complete, PaymentsList.' },
+      { name: 'Invalidate across features', why: 'Paying changes the policy payment status too.', what: 'usePay invalidates both payment and policy query keys on settle.', where: 'paymentQueries.' },
+    ],
+    built: ['PaymentsPage, PaymentsList, PayDialog, ReceiptPage', 'Payments tab + Pay now on policy details', 'paymentQueries', 'Payments DB objects, API and seed'],
+    walkthrough: 'Open a policy → Payments tab → Pay now. Use UPI fail@upi to see a decline, then Try again with a valid UPI id to get a receipt. The Payments page lists all attempts with filters.',
+    api: ['GET /api/payments?status=&paymentMode=&policyId=', 'POST /api/payments/pay (Idempotency-Key header)', 'POST /api/payments/{id}/refund'],
+    db: ['tables/140_payments.sql', 'functions/370_payments.sql', 'seed/172_demo_payments.sql'],
+    learned: ['Idempotency protects money flows', 'Keep the gateway behind an interface', 'Store failed attempts too'],
+    approach: 'Money flows need traceability: every attempt is a row, and retries are safe by construction.',
+    mistakes: ['Generating the key on every click', 'Marking a policy paid before the gateway answers', 'Not invalidating the policy query after paying'],
+    interview: [['What is an idempotency key?', 'A client-generated unique value per logical operation; the server returns the original result when it sees the same key again, making retries safe.']],
+    exercise: 'Add a partial-payment option (amount below due) and show the remaining balance on the policy.',
+    next: 'Day 46 - Document Management',
+    commit: 'Day 45: Add payment management',
+  },
+}

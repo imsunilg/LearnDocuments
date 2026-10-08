@@ -2,6 +2,7 @@
 
 | Commit | Date | Message |
 |---|---|---|
+| 6814b88 | 2026-10-08 | Day 44: Add claims management |
 | 584aff7 | 2026-10-08 | Day 43: Add endorsement management |
 | ec18603 | 2026-10-08 | Day 42: Add policy renewal |
 | 00273d5 | 2026-10-08 | Day 41: Add policy details |
