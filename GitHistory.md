@@ -2,6 +2,7 @@
 
 | Commit | Date | Message |
 |---|---|---|
+| 2792912 | 2026-10-08 | Day 15: Add custom hooks for customers, API and debounce |
 | a568976 | 2026-10-08 | Day 14: Add Zod schema validation |
 | 3a35f38 | 2026-10-08 | Day 13: Migrate customer form to React Hook Form |
 | 39440b8 | 2026-10-08 | Day 12: Add modal, confirmation dialog and toast |
