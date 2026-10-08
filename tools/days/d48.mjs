@@ -1,0 +1,27 @@
+﻿export default {
+  48: {
+    title: 'Reports Dashboard',
+    react: 'One query for many widgets, keepPreviousData for filter changes, controlled date-range form with validation, lazy-loaded route, CSV export utility',
+    insurance: 'Management view: premium written vs collected, outstanding, open and settled claims, product-line mix, top agents, renewals due',
+    backend: 'GET /api/reports/dashboard?from=&to= (reports.view) - validates the range and returns everything in one JSON document',
+    database: 'fn_report_dashboard(from, to): KPIs, monthly series, product/claim/payment/policy breakdowns, top agents, expiring policies - aggregation stays in PostgreSQL',
+    objectives: ['Aggregate in the database, not in the browser', 'Design KPI cards', 'Filter by period without UI flicker', 'Export data to CSV safely'],
+    concepts: [
+      { name: 'Aggregate where the data lives', why: 'Sending 10,000 rows to sum them in JavaScript is slow and leaks data.', what: 'fn_report_dashboard returns only the totals and series the screen draws.', where: '390_reports.sql.' },
+      { name: 'One round trip', why: 'Six widgets x six requests = slow page.', what: 'A single jsonb document feeds every widget; one cache entry per date range.', where: 'useDashboardReport.' },
+      { name: 'keepPreviousData', why: 'Changing a filter should not blank the page.', what: 'The old numbers stay visible (with "updating…") until the new ones arrive.', where: 'reportQueries.' },
+      { name: 'CSV injection', why: 'A cell starting with = or @ can run formulas in Excel.', what: 'toCsv prefixes risky cells with an apostrophe, quotes commas/newlines and adds a UTF-8 BOM.', where: 'utils/csv.ts.' },
+    ],
+    built: ['ReportsPage (KPI cards, tables, period filter, CSV export)', 'reportQueries, report models, csv util', 'ReportsController + fn_report_dashboard'],
+    walkthrough: 'Open Reports, change the period to October and Apply: the numbers change without a spinner flash. Export CSV and open it in Excel.',
+    api: ['GET /api/reports/dashboard?from=2026-01-01&to=2026-10-31'],
+    db: ['functions/390_reports.sql'],
+    learned: ['Push aggregation to SQL', 'Cache per filter', 'Escape CSV cells'],
+    approach: 'A report is a question; design the query for the question, then draw it.',
+    mistakes: ['Computing totals in the browser', 'One request per widget', 'Clearing data while loading the next filter'],
+    interview: [['What is keepPreviousData for?', 'It shows the previous query result while a new key loads, so paging and filtering do not flash an empty state.']],
+    exercise: 'Add a "This month / This quarter / This FY" quick-pick for the period.',
+    next: 'Day 49 - Charts and KPI Cards',
+    commit: 'Day 48: Add reports dashboard',
+  },
+}
