@@ -2,6 +2,7 @@
 
 | Commit | Date | Message |
 |---|---|---|
+| 13ac07a | 2026-10-08 | Day 50: Add error boundaries, correlation ids and audit logs |
 | 1a7affe | 2026-10-08 | Day 49: Add charts and live dashboard |
 | ae0233d | 2026-10-08 | Day 48: Add reports dashboard |
 | 0837994 | 2026-10-08 | Day 47: Add file upload, download and preview |

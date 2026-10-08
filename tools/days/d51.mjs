@@ -1,0 +1,27 @@
+﻿export default {
+  51: {
+    title: 'Performance Optimization',
+    react: 'React.memo, useMemo, useCallback, useDeferredValue, the Profiler component and React DevTools Profiler; measure first, optimise second',
+    insurance: 'Large policy and customer lists must stay responsive while agents filter and select rows',
+    backend: 'No change (server-side paging and DB filtering already keep payloads small)',
+    database: 'No change',
+    objectives: ['Find unnecessary re-renders', 'Apply memoisation where it pays off', 'Keep typing responsive with deferred values', 'Measure with the Profiler'],
+    concepts: [
+      { name: 'Why components re-render', why: 'A parent render re-renders every child by default.', what: 'Re-rendering is cheap until a list is large or each row is heavy; then one click can redo hundreds of rows.', where: 'PerfLabPage plain mode.' },
+      { name: 'React.memo + stable props', why: 'memo skips a child when its props are shallow-equal.', what: 'It only works if props are stable: handlers need useCallback, derived arrays need useMemo. DataTable rows are now memoised.', where: 'DataTable MemoRow, PerfLabPage.' },
+      { name: 'useDeferredValue', why: 'Typing must never wait for a heavy list.', what: 'The input uses the live value; the list uses the deferred one and catches up when idle (we dim it meanwhile).', where: 'PerfLabPage.' },
+      { name: 'Profiler', why: 'Guessing is how you optimise the wrong thing.', what: '<Profiler onRender> reports actualDuration per commit (13 ms plain vs 0.6 ms memo in the lab). Never setState inside onRender: it causes a render loop.', where: 'PerfLabPage.' },
+    ],
+    built: ['Performance lab page (Administration)', 'Memoised DataTable rows', 'Profiler measurements'],
+    walkthrough: 'Administration → Perf lab. Click a row in "Plain" mode and read the commit time, switch to "React.memo" and click again, then try the deferred mode while typing quickly.',
+    api: [],
+    db: [],
+    learned: ['memo needs stable props', 'Defer heavy derived work', 'Profile before optimising', 'Do not call setState from Profiler.onRender'],
+    approach: 'Most apps are fast enough; optimise the few hot spots a profiler points to.',
+    mistakes: ['memo everywhere without measuring', 'Inline arrow props that defeat memo', 'Setting state inside Profiler.onRender', 'Using index as key in reorderable lists'],
+    interview: [['When does React.memo not help?', 'When props change every render (new object/function identities), when the component is cheap, or when children read context that changes.']],
+    exercise: 'Add list virtualisation (render only visible rows) and compare commit times for 10,000 rows.',
+    next: 'Day 52 - Code Splitting and Lazy Loading',
+    commit: 'Day 51: Add performance optimisation lab and memoised table rows',
+  },
+}
