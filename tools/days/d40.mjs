@@ -1,0 +1,28 @@
+export default {
+  40: {
+    title: 'Policy Search',
+    react: 'URL-synced filters (useSearchParams), debounced search, keepPreviousData, reusable FilterPanel, facet counts',
+    insurance: 'Advanced policy search: text, status, product line, expiring-within-N-days, issue-date range, premium range, agent; sort and page - all shareable by URL; demo data of 16 policies',
+    backend: 'PoliciesController.GetAll → fn_policy_search with arbitrary filter keys',
+    database: 'fn_policy_search (safe dynamic SQL with %L/%I, filters + ranges + facets), partial and composite indexes for the filters, 16 demo policies (seed/170) with expired / expiring-soon cases',
+    objectives: ['Make filtered views linkable', 'Combine debounce, caching and URL state', 'Write a safe dynamic search function', 'Index for the filters you offer'],
+    concepts: [
+      { name: 'URL as state', why: 'A filtered list should be bookmarkable and survive refresh and Back.', what: 'useSearchParams stores filters/sort/page; useUrlFilters wraps it with typed helpers. `replace: true` avoids a history entry per keystroke; changing a filter resets the page.', where: 'hooks/useUrlFilters.ts.' },
+      { name: 'Debounce + URL + query', why: 'Typing must feel instant but the API must not be hammered.', what: 'The input keeps local state; after 400 ms the debounced value is written to the URL; the URL change changes the query key; TanStack Query fetches (and keeps the previous page visible).', where: 'PoliciesPage.' },
+      { name: 'Reusable FilterPanel', why: 'Claims, payments and reports need the same filter bar.', what: 'A config array (name, label, type, options) renders the controls; the parent owns the values.', where: 'components/tables/FilterPanel.tsx.' },
+      { name: 'Safe dynamic SQL', why: 'Search functions need optional filters.', what: 'Every value is injected with format(\'%L\') (literal) and identifiers with %I; sort columns are whitelisted. Never concatenate raw input.', where: 'fn_policy_search.' },
+      { name: 'Facets', why: 'Show "Active 14 · Expired 2" for the current filters.', what: 'A second aggregate query over the same WHERE returns counts per status.', where: 'fn_policy_search → facets.' },
+    ],
+    built: ['PoliciesPage with FilterPanel, facet chips, URL state', 'useUrlFilters, FilterPanel, policyQueries', 'fn_policy_search + indexes + demo policies'],
+    walkthrough: 'Open /policies?effectiveStatus=Expired&sortBy=totalPremium&sortDir=asc directly: the page opens already filtered and sorted. Change a filter: the URL updates, Back/Forward move through states, refresh keeps everything.',
+    api: ['GET /api/policies?search=&effectiveStatus=&productTypeCode=&agentId=&expiringInDays=&issuedFrom=&issuedTo=&premiumMin=&premiumMax=&sortBy=&sortDir=&page=&pageSize=  → {items,totalCount,page,pageSize,facets}'],
+    db: ['functions/321_policy_search.sql', 'indexes/090_policies_search.sql', 'seed/170_demo_policies.sql'],
+    learned: ['The URL is the best home for list state', 'Offer only filters you have indexed'],
+    approach: 'Search is the most used screen in an insurance back office; it must be fast, linkable and forgiving.',
+    mistakes: ['Keeping filters only in component state (lost on refresh)', 'A history entry per keystroke', 'Unwhitelisted ORDER BY'],
+    interview: [['Why store filters in the URL?', 'Shareable, bookmarkable, back-button friendly, survives refresh.'], ['How do you avoid SQL injection in dynamic search SQL?', 'Parameterise/quote values (%L), quote identifiers (%I), whitelist sortable columns.']],
+    exercise: 'Save and reload a filter preset: store named filter sets in localStorage and apply them by writing them back into the URL.',
+    next: 'Day 41 - Policy Details',
+    commit: 'Day 40: Add advanced policy search',
+  },
+}
