@@ -1,0 +1,25 @@
+export default {
+  12: {
+    title: 'Modal, confirmation dialog, toast',
+    react: 'Portals, composition, focus handling basics, global notification pattern (Context)',
+    insurance: 'Delete-customer confirmation dialog and success/error toasts for save and delete',
+    objectives: ['Render UI outside the parent DOM with portals', 'Manage focus and Esc/Tab for dialogs', 'Build a global toast service with Context', 'Use React 19 `use(Context)`'],
+    concepts: [
+      { name: 'Portals', why: 'A modal inside a clipped/transformed parent can be hidden or mis-stacked.', what: 'createPortal(children, document.body) renders into another DOM node but keeps React tree (events/context) intact.', how: 'Modal and the toast stack are portalled into <body>.', where: 'components/dialogs/Modal.tsx, ToastProvider.' },
+      { name: 'Accessible dialogs', why: 'Keyboard and screen-reader users must not get lost.', what: 'role="dialog", aria-modal, aria-labelledby, focus moved in, Tab trapped, Esc closes, focus restored.', how: 'useEffect adds a keydown listener and restores focus in cleanup.', where: 'Modal.' },
+      { name: 'Context-backed service (toast)', why: 'Any component should be able to notify without prop drilling.', what: 'Provider owns the toast queue; useToast() exposes a stable API.', how: 'The api object is memoised so consumers do not re-render when toasts change.', where: 'ToastProvider, useToast.' },
+      { name: 'Composition', why: 'Dialogs differ only in content.', what: 'ConfirmationDialog is a Modal with a footer.', how: 'Pass children and a footer slot.', where: 'ConfirmationDialog.' },
+    ],
+    built: ['Modal (portal, focus trap)', 'ConfirmationDialog', 'ToastProvider + useToast (auto-dismiss + close button)', 'AppProviders', 'overlay.css'],
+    walkthrough: 'CustomersPage keeps `toDelete` in state. Clicking Delete sets it; the dialog opens; Confirm calls the API, shows a toast, closes and reloads the list.',
+    tsNotes: ['createContext<ToastApi | null>', 'Union type ToastKind'],
+    bestPractices: ['Never use window.confirm/alert in a polished app', 'Provide aria-live regions for toasts'],
+    learned: ['Portals escape CSS clipping', 'Focus management is part of correctness', 'Memoise context values'],
+    approach: 'Reusable overlays enforce consistent UX and accessibility across all modules.',
+    mistakes: ['Forgetting to restore focus', 'Putting a new object in a context value every render', 'Backdrop click closing while dragging inside the dialog'],
+    interview: [['What is a portal?', 'Renders children into a different DOM node while preserving React context and event bubbling.'], ['Why memoise a context value?', 'Otherwise all consumers re-render whenever the provider re-renders.']],
+    exercise: 'Add a progress bar to the toast that shrinks during the auto-dismiss time, and pause the timer on hover.',
+    next: 'Day 13 - React Hook Form',
+    commit: 'Day 12: Add modal, confirmation dialog and toast',
+  },
+}
