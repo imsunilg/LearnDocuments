@@ -2,6 +2,7 @@
 
 | Commit | Date | Message |
 |---|---|---|
+| a568976 | 2026-10-08 | Day 14: Add Zod schema validation |
 | 3a35f38 | 2026-10-08 | Day 13: Migrate customer form to React Hook Form |
 | 39440b8 | 2026-10-08 | Day 12: Add modal, confirmation dialog and toast |
 | 0cdbc04 | 2026-10-08 | Day 11: Add reusable DataTable component |

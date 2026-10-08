@@ -1,0 +1,25 @@
+export default {
+  15: {
+    title: 'Custom hooks',
+    react: 'Rules of Hooks, extracting logic into custom hooks (useApi, useDebounce, useLocalStorage, useCustomers)',
+    insurance: 'Customer search is debounced; fetching logic extracted from the page into hooks',
+    objectives: ['Understand the Rules of Hooks', 'Extract reusable stateful logic', 'Debounce user input', 'Cancel stale requests inside a hook'],
+    concepts: [
+      { name: 'Rules of Hooks', why: 'React tracks hooks by call order.', what: 'Call hooks only at the top level of components/hooks, never in loops, conditions or nested functions.', how: 'Each render must call the same hooks in the same order.', where: 'All hooks files.' },
+      { name: 'Custom hooks', why: 'Share logic, not UI.', what: 'A function named useXxx that calls other hooks.', how: 'useApi(fetcher, deps) returns {data, error, loading, reload}; useCustomers wraps it for one feature.', where: 'hooks/useApi.ts, features/customers/useCustomers.ts.' },
+      { name: 'Debouncing', why: 'Do not call the API on every keystroke.', what: 'Delay a value change until the user pauses.', how: 'useDebounce sets a timer in an effect and clears it in cleanup.', where: 'CustomersPage search.' },
+      { name: 'Latest-ref pattern', why: 'Effects should not re-run just because an inline function changed identity.', what: 'Store the latest callback in a ref.', how: 'fetcherRef.current is updated in an effect and read inside the fetch effect.', where: 'useApi.' },
+    ],
+    built: ['useApi', 'useDebounce', 'useLocalStorage', 'useCustomers', 'CustomersPage simplified'],
+    walkthrough: 'CustomersPage now only declares UI state and calls useCustomers(params). The hook handles loading, errors, cancellation and reload.',
+    tsNotes: ['Generic hooks (useApi<T>)', 'Tuple return type [T, (v:T)=>void]'],
+    bestPractices: ['Prefix with use', 'Return a stable API (useCallback)', 'Keep hooks focused'],
+    learned: ['Hooks compose', 'Logic reuse without HOCs', 'Debounce = timer + cleanup'],
+    approach: 'Hooks keep components declarative; Day 38 swaps useApi for TanStack Query without touching pages much.',
+    mistakes: ['Calling hooks conditionally', 'Missing cleanup in timers', 'Passing an unstable object as a dependency (use JSON.stringify or primitives)'],
+    interview: [['What are custom hooks?', 'Functions that reuse stateful logic by calling built-in hooks.'], ['Why can’t hooks be conditional?', 'React identifies them by call order.']],
+    exercise: 'Use useLocalStorage to remember the selected page size of the customers table.',
+    next: 'Day 16 - Context API',
+    commit: 'Day 15: Add custom hooks for customers, API and debounce',
+  },
+}
