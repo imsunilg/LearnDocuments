@@ -1,0 +1,27 @@
+﻿export default {
+  55: {
+    title: 'Integration Testing',
+    react: 'MSW intercepts the real axios calls so components, the HTTP client and TanStack Query are tested together; renderWithProviders helper; user-event flows',
+    insurance: 'The payment retry rules (new key after a recorded failure, same key after a network error) and the permission model are proven end to end',
+    backend: 'WebApplicationFactory<Program> boots the whole API in memory (routing, middleware, JWT, permission filter, validation, exception handler) against the real PostgreSQL database',
+    database: 'Read-mostly tests against the seeded database; the only write is one rejected request that proves the audit trail',
+    objectives: ['Test several layers together', 'Fake the network, not the app', 'Prove authorization and error contracts', 'Find bugs unit tests cannot'],
+    concepts: [
+      { name: 'MSW (Mock Service Worker)', why: 'Mocking axios itself hides bugs in interceptors, headers and error mapping.', what: 'MSW answers at the network level, so the real client code runs. Per-test handlers script the server, onUnhandledRequest: "error" catches forgotten routes.', where: 'src/test/server.ts, PayDialog.test.tsx.' },
+      { name: 'WebApplicationFactory', why: 'Controllers alone do not tell you if filters, middleware and auth are wired correctly.', what: 'It hosts the real Program in memory and gives an HttpClient. Tests log in, send tokens and assert status codes, headers and bodies.', where: 'ApiIntegrationTests.' },
+      { name: 'A bug found by an integration test', why: 'This is what integration tests are for.', what: 'A viewer posting an empty body got 400 validation hints instead of 403, because [ApiController] validates before our permission filter. Fixed by giving PermissionFilter order -3000 (Filters.Add<T>() ignores the type\'s own Order).', where: 'Program.cs, PermissionAuthorization.cs.' },
+      { name: 'Idempotency semantics', why: 'Whether to reuse the key depends on what the client knows.', what: 'After a recorded Failed result the next click is a new attempt (new key). After a network error the outcome is unknown, so the same key is re-sent and the server de-duplicates.', where: 'PayDialog.test.tsx.' },
+    ],
+    built: ['MSW server + setup', 'renderWithProviders', 'PayDialog integration tests', 'API integration tests (6)', 'Permission filter ordering fix'],
+    walkthrough: 'Run npm test and dotnet test. Temporarily remove the -3000 order in Program.cs and watch the viewer test fail with a 400.',
+    api: [],
+    db: [],
+    learned: ['Fake the network, not your code', 'Integration tests catch wiring bugs', 'Filter order matters for security'],
+    approach: 'Unit tests prove the rules, integration tests prove the pieces are connected.',
+    mistakes: ['Mocking axios directly', 'Sharing a QueryClient between tests', 'Integration tests that depend on test order or leave data behind'],
+    interview: [['Why prefer MSW over mocking fetch/axios?', 'It exercises your real request code and works the same in tests, Storybook and the browser; only the server is faked.']],
+    exercise: 'Add an integration test that a Claims officer cannot POST /api/policies/{id}/issue (403).',
+    next: 'Day 56 - Accessibility and Responsive Design',
+    commit: 'Day 55: Add integration tests (MSW and WebApplicationFactory)',
+  },
+}
