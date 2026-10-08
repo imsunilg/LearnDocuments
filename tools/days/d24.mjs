@@ -1,0 +1,27 @@
+export default {
+  24: {
+    title: 'Insurance Product Management',
+    react: 'Master-detail UI, nested layout routes, cross-field validation in the form kit, key to remount on selection',
+    insurance: 'Product types (Motor/Health/Home/Travel) and products with base rates, sum-insured limits and effective-from/to dates (Live / Upcoming / Expired)',
+    backend: 'ProductsController + ProductTypesController, FluentValidation (rate, sum insured range, date order)',
+    database: 'insurance_product_types, insurance_products (check constraints, unique name per type), vw_insurance_products with lifecycle, fn_product_get_all and friends',
+    objectives: ['Build master-detail screens', 'Validate date ranges and numeric ranges across fields', 'Compute derived status in SQL'],
+    concepts: [
+      { name: 'Master-detail', why: 'Users think "Motor → its products".', what: 'Selecting a tile (master) re-queries the grid (detail) with baseParams.productTypeId.', how: 'The grid is keyed by the selection so its page/search state resets.', where: 'ProductsPage.' },
+      { name: 'Cross-field validation in a config-driven form', why: 'effectiveTo ≥ effectiveFrom; max ≥ min.', what: 'FieldDef.validate(value, allValues) feeds a Zod superRefine.', where: 'fieldDefs.buildSchema, ProductsPage.buildFields.' },
+      { name: 'Derived values in the database', why: 'Lifecycle (Upcoming/Live/Expired) depends on today.', what: 'A CASE expression in the view, filterable and sortable.', where: 'entities.mjs → product.extraSelect.' },
+      { name: 'Nested layout routes', why: 'Products and Product types share a sub-nav.', where: 'ProductsLayout + router.' },
+    ],
+    built: ['ProductsPage (type tiles + CrudListPage)', 'ProductTypesPage', 'format.ts (INR/date helpers)', 'Product DB tables, seed (4 types, 12 products)', 'Cross-field validate in FieldDef'],
+    walkthrough: 'The tile row loads product types; choosing one sets baseParams so the list query includes productTypeId. The create form defaults its type select to the selected tile.',
+    api: ['GET/POST /api/products …', 'GET/POST /api/product-types …', 'GET /api/products?productTypeId=1&lifecycle=Live'],
+    db: ['tables/040_products.sql', 'seed/120_products.sql', 'fn_product_* and fn_product_type_* (generated)'],
+    learned: ['Master-detail = two queries + a key', 'Cross-field rules belong to the schema, not the inputs'],
+    approach: 'Products drive pricing later (Day 28), so base rates and sum-insured limits live in the database, editable by admins.',
+    mistakes: ['Hard-coding product lists in the UI', 'Validating date order only on the client'],
+    interview: [['How do you reset child state when the parent selection changes?', 'Give the child a key based on the selection so React remounts it.'], ['Why compute lifecycle in SQL?', 'It is filterable/sortable server-side and always consistent.']],
+    exercise: 'Add a "Duplicate product" row action that opens the form pre-filled with the product values and a new name.',
+    next: 'Day 25 - Master Data Management',
+    commit: 'Day 24: Add insurance product management',
+  },
+}
