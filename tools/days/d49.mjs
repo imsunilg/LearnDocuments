@@ -1,0 +1,27 @@
+﻿export default {
+  49: {
+    title: 'Charts and KPI Cards',
+    react: 'Recharts (ComposedChart, PieChart, BarChart), lazy-loaded chart chunk with Suspense, accessible charts (role="img" + text summary), a live dashboard driven by one query shared with the reports page',
+    insurance: 'Premium written vs collected trend, product-line mix, claims pipeline, collections by payment mode, and a home dashboard with real KPI numbers',
+    backend: 'No new endpoint: the Day 48 dashboard document already contains the series',
+    database: 'No new objects (fn_report_dashboard returns month series and breakdowns)',
+    objectives: ['Draw data with Recharts', 'Keep a heavy library out of the main bundle', 'Make charts understandable without sight', 'Reuse one query across pages'],
+    concepts: [
+      { name: 'Charts are thin wrappers', why: 'Shaping data in the component makes charts hard to test.', what: 'The API returns ready-shaped arrays; each chart only maps keys to axes/colours.', where: 'ReportCharts.' },
+      { name: 'React.lazy for heavy libraries', why: 'Recharts is a large chunk that most screens do not need immediately.', what: 'lazy(() => import(...)) + Suspense loads it after the KPI numbers are already on screen.', where: 'ReportsPage, DashboardPage.' },
+      { name: 'Accessible charts', why: 'SVG charts are invisible to screen readers.', what: 'role="img" with an aria-label containing the title and a one-line takeaway; tables below hold the exact numbers.', where: 'ChartCard.' },
+      { name: 'Shared query cache', why: 'The dashboard and reports page show the same numbers.', what: 'Both call useDashboardReport({}) so navigating between them is instant.', where: 'reportQueries.' },
+    ],
+    built: ['ReportCharts (4 charts)', 'Real-data DashboardPage with quick links', 'Chart styling on the brand palette'],
+    walkthrough: 'Log in: the dashboard shows live KPIs and two charts. Open Reports for all four charts and the tables. Log in as a role without reports.view and the dashboard shows only quick links.',
+    api: ['GET /api/reports/dashboard'],
+    db: [],
+    learned: ['Lazy-load chart libraries', 'Charts need a text alternative', 'One cached query can serve many views'],
+    approach: 'A chart should answer one question; the title says the question and the summary states the answer.',
+    mistakes: ['Giving the chart container no height', 'Shipping Recharts in the main bundle', 'Colour as the only way to tell series apart'],
+    interview: [['How do you make charts accessible?', 'Provide a text summary and a data table, do not rely on colour alone, and label the SVG container with role="img" and aria-label.']],
+    exercise: 'Add a toggle to switch the trend chart between premium and policy count.',
+    next: 'Day 50 - Error Boundaries, Correlation IDs and Audit Logs',
+    commit: 'Day 49: Add charts and live dashboard',
+  },
+}
