@@ -1,0 +1,28 @@
+export default {
+  28: {
+    title: 'Motor: premium calculation UI',
+    react: 'Derived state, useMemo, calculation services, debouncing live quotes',
+    insurance: 'Live premium calculator (IDV, NCB, add-ons, third-party, GST break-up) beside the motor quote form',
+    backend: 'PremiumController: POST /api/premium/calculate, GET /api/premium/rates/{group}, GET /api/premium/motor-idv',
+    database: 'premium_rates + premium_calculations tables, fn_premium_calculate (dispatcher), fn_premium_motor, fn_motor_idv_suggest, fn_rates_get; rating tables seeded',
+    objectives: ['Keep pricing logic in ONE place', 'Derive UI values from form state', 'Debounce expensive recalculation', 'Explain every rupee of a premium'],
+    concepts: [
+      { name: 'Single source of truth for pricing', why: 'Duplicated formulas in UI, API and reports drift apart.', what: 'The formula lives in PostgreSQL (fn_premium_motor); the UI only displays the returned breakup.', how: 'Dispatcher builds the function name from the product type: fn_premium_<type>. Adding Health/Home/Travel later adds one function each.', where: '300_premium.sql, usePremium.ts.' },
+      { name: 'Derived state + useMemo', why: 'The details document and quote readiness are computed from the form, not stored.', what: '`useMemo(() => buildMotorDetails(values), [JSON.stringify(values)])`.', where: 'MotorQuotePage, motorDetails.ts.' },
+      { name: 'Debounced live quote', why: 'Every keystroke would trigger a calculation.', what: 'usePremium debounces the serialized input 500 ms, only fires when `ready`, cancels stale requests, and flags `stale` while waiting.', where: 'features/premium/usePremium.ts.' },
+      { name: 'Insurance maths', why: 'Understand the premium.', what: 'Own damage = IDV × plan rate × age factor × engine factor. + mandatory third-party + add-ons (% of OD or flat). − NCB% of OD. × term. + 18% GST.', where: 'fn_premium_motor.' },
+    ],
+    built: ['PremiumSummary (presentational), usePremium hook', 'Cover & add-ons section with IDV suggestion', 'Premium tables, rates seed and calculation functions', 'PremiumController'],
+    walkthrough: 'Changing any input updates `details`; after 500 ms of silence usePremium POSTs it. The API forwards to fn_premium_calculate which validates IDV range/NCB/add-ons and returns the breakup. Business errors (e.g. IDV out of range) show under the summary.',
+    api: ['POST /api/premium/calculate { productId, details, save?, customerId? }', 'GET /api/premium/rates/MOTOR_ADDON | MOTOR_NCB', 'GET /api/premium/motor-idv?model=&manufactureYear='],
+    db: ['tables/080_premium.sql', 'seed/150_premium_rates.sql', 'functions/300_premium.sql'],
+    problems: [['Dispatching with a CASE expression failed when other product functions did not exist yet', 'PostgreSQL resolves every function in a single SQL expression at parse time. Switched to EXECUTE format(\'SELECT fn_premium_%s(...)\') so each product line is resolved only when used.'], ['Casting band keys inside a WHERE could hit non-numeric keys of other groups', 'Select the group first in a subquery and cast inside a CASE.']],
+    learned: ['Do the maths once, in the database', 'A calculator UI is an input → debounced request → breakup view', 'Surface business-rule errors next to the result'],
+    approach: 'Rates in tables mean underwriters can change factors without a release.',
+    mistakes: ['Re-implementing the formula in JavaScript "for speed"', 'Calculating on every keystroke', 'Floating-point money in the browser (round on the server)'],
+    interview: [['Why debounce a live quote?', 'To avoid a request per keystroke and to prevent out-of-order responses overwriting newer ones.'], ['Where should pricing rules live?', 'In one authoritative place (here the DB function) so every channel quotes the same price.']],
+    exercise: 'Add an add-on (zero depreciation is there) - add "Key replacement" at ₹250 flat via a new row in premium_rates and see it appear without UI changes.',
+    next: 'Day 29 - Motor: proposal creation',
+    commit: 'Day 28: Add motor premium calculation',
+  },
+}
