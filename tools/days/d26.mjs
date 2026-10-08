@@ -1,0 +1,26 @@
+export default {
+  26: {
+    title: 'Motor Insurance module',
+    react: 'Feature module organisation, lazy sub-routes (route-level `lazy`), shared list page configured per product',
+    insurance: 'Motor module shell: list of motor quotes/proposals with a vehicle-type filter',
+    backend: 'ProposalsController (read endpoints scaffold)',
+    database: 'vehicles, proposals and status_history tables; vw_proposals / vw_vehicles with joined names; motor master data already seeded (makes, models, fuel, vehicle types)',
+    objectives: ['Structure a product module', 'Lazy-load a route subtree', 'Reuse one list page for all product lines'],
+    concepts: [
+      { name: 'Route-level lazy loading', why: 'Users who never open Motor should not download its code.', what: 'React Router route `lazy: () => import(...)` returning { Component }.', how: 'The chunk loads on first navigation; Vite creates a separate JS file.', where: 'router.tsx → motor routes.' },
+      { name: 'Shared, configurable list page', why: 'Motor/Health/Home/Travel lists differ only by filter and one column.', what: 'ProposalListPage(productTypeCode, extraFilter, extraColumn).', where: 'features/proposals/ProposalListPage.tsx.' },
+      { name: 'Computed view columns', why: 'Vehicle type and registration number live inside proposals.details jsonb.', what: 'vw_proposals exposes `details->\'vehicle\'->>\'vehicleType\'` as a column, so it is sortable and filterable.', where: 'entities.mjs (proposal.view).' },
+    ],
+    built: ['ProposalListPage + MotorListPage', 'StatusBadge (one colour map for all workflows)', 'proposal.ts model (including PremiumBreakup)', 'vehicles / proposals / status_history tables'],
+    walkthrough: 'GET /api/proposals?productTypeCode=MOTOR&vehicleType=CAR&status=Draft returns the page of motor proposals; the filter keys are mapped to snake_case columns of the view by the generated function.',
+    api: ['GET /api/proposals?productTypeCode=&status=&vehicleType=&search=', 'GET /api/proposals/{id}'],
+    db: ['tables/060_vehicles.sql', 'tables/070_proposals.sql', 'generated fn_proposal_get_all/get_by_id, fn_vehicle_*'],
+    learned: ['Modules own their routes, pages and types', 'Lazy routes keep the initial bundle small'],
+    approach: 'Organising by product line mirrors how the business thinks and lets teams own modules.',
+    mistakes: ['Importing a lazy module statically elsewhere (defeats code splitting)', 'Duplicating list pages per product'],
+    interview: [['How does route-level lazy loading differ from React.lazy?', 'Router `lazy` loads code (and data loaders) as part of navigation; React.lazy loads a component during render under Suspense.']],
+    exercise: 'Add a "Fuel type" filter to the Motor list.',
+    next: 'Day 27 - Motor: vehicle, customer, insurance details',
+    commit: 'Day 26: Add motor insurance module',
+  },
+}
