@@ -2,6 +2,7 @@
 
 | Commit | Date | Message |
 |---|---|---|
+| 13e9c07 | 2026-10-08 | Day 26: Add motor insurance module |
 | 69db9f9 | 2026-10-08 | Day 25: Add master data management |
 | 6660ede | 2026-10-08 | Day 24: Add insurance product management |
 | c0bc3d7 | 2026-10-08 | Day 23: Add broker management |

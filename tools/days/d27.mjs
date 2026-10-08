@@ -1,0 +1,28 @@
+export default {
+  27: {
+    title: 'Motor: vehicle, customer, insurance details',
+    react: 'Multi-section forms, form state shared across sections (one useForm), nested field names, async combobox, dependent selects',
+    insurance: 'New motor quote form: pick a customer (details auto-fetched), reuse one of their vehicles or enter a new one, choose plan, start date and previous insurance',
+    backend: 'VehicleRequest + validator (registration number format MH12AB1234, year, cc, seats), VehiclesController incl. POST /api/vehicles/upsert',
+    database: 'fn_vehicle_upsert (create-or-update by registration number, blocks vehicles owned by another customer), generated fn_vehicle_*, seeded vehicles',
+    objectives: ['Build a long form in sections', 'Validate nested objects with Zod', 'Auto-fetch related data when a selection changes', 'Normalise input (registration numbers)'],
+    concepts: [
+      { name: 'One form, many sections', why: 'Splitting a long form into separate forms loses cross-section logic and values.', what: 'A single useForm with nested names (`vehicle.make`, `insurance.productId`) and one Zod schema containing nested z.object().', how: 'Each section is just JSX inside the same <form>; errors are looked up by path.', where: 'MotorQuotePage, motorSchema.ts.' },
+      { name: 'Async combobox', why: 'A <select> cannot hold 100,000 customers.', what: 'role="combobox" input + listbox of search results (debounced); selection loads the customer and shows a summary card.', where: 'CustomerPicker.tsx.' },
+      { name: 'Dependent selects & derived values', why: 'Make → Model is hierarchical; the model carries the vehicle type.', what: 'useMasterData("VEHICLE_MODEL", makeId); picking a model sets vehicleType from the model meta.', where: 'MotorQuotePage.' },
+      { name: 'Input normalisation', why: 'MH 12-ab 1234 and mh12ab1234 are the same plate.', what: 'Uppercase and strip spaces/hyphens as the user types (UI) and again in the API/DB.', where: 'registration field onChange, VehicleRequestValidator.Normalize, fn_vehicle_upsert.' },
+    ],
+    built: ['MotorQuotePage (customer / vehicle / insurance sections)', 'CustomerPicker combobox', 'motorSchema.ts', 'vehicleApi + Vehicle model', 'Vehicle upsert endpoint and seeds'],
+    walkthrough: 'Selecting a customer fetches /api/customers/{id} and /api/vehicles?customerId=…; chips offer their registered vehicles. "Save vehicle details" validates all three sections, then upserts the vehicle. The same form state feeds premium calculation on Day 28.',
+    api: ['POST /api/vehicles/upsert', 'GET /api/vehicles?customerId=&vehicleType=', 'CRUD /api/vehicles'],
+    db: ['functions/240_vehicles.sql', 'seed/140_vehicles.sql', 'ck_vehicles_regno constraint'],
+    problems: [['Registration regex differed between UI and API', 'Normalise first (uppercase, remove spaces/hyphens) and use the same pattern in Zod, FluentValidation and the CHECK constraint.']],
+    learned: ['Nested form names keep sections together', 'Auto-fetching related records makes forms feel instant', 'Normalise identifiers everywhere'],
+    approach: 'A single form state is the foundation for the wizard (Day 37) and for live premium calculation (Day 28).',
+    mistakes: ['One <form> per section', 'Not clearing dependent fields when the parent changes', 'Trusting the client to normalise identifiers'],
+    interview: [['How do you validate a nested object in React Hook Form?', 'Use a Zod schema with nested z.object and dotted field paths in register().'], ['What is a combobox?', 'An input paired with a popup list; ARIA roles combobox/listbox/option make it accessible.']],
+    exercise: 'Auto-fetch customer details by selecting a customer (done) - now also pre-fill "previous insurer" from the customer\'s last proposal.',
+    next: 'Day 28 - Motor: premium calculation UI',
+    commit: 'Day 27: Add motor vehicle, customer and insurance details',
+  },
+}
