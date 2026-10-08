@@ -2,6 +2,7 @@
 
 | Commit | Date | Message |
 |---|---|---|
+| ab1ea94 | 2026-10-08 | Day 40: Add advanced policy search |
 | 7b47453 | 2026-10-08 | Day 39: Add mutations and optimistic updates |
 | 9c7f678 | 2026-10-08 | Day 38: Introduce TanStack Query |
 | 2c77f31 | 2026-10-08 | Day 37: Add insurance proposal wizard |

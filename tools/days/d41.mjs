@@ -1,0 +1,27 @@
+export default {
+  41: {
+    title: 'Policy Details',
+    react: 'Detail pages composed of tabs, data prefetching (prefetchQuery on hover/focus), one query for a whole aggregate, accordion sections generated from data',
+    insurance: 'Policy details page: Summary (certificate), Insured details (vehicle / property / members ...), Premium breakup, History timeline; print-friendly',
+    backend: 'GET /api/policies/{id}/details',
+    database: 'fn_policy_get_details - policy, customer snapshot, insured sections and status history as ONE JSON document',
+    objectives: ['Build a tabbed detail page', 'Fetch an aggregate in one request', 'Prefetch to make navigation feel instant'],
+    concepts: [
+      { name: 'Aggregate endpoint', why: 'A details page needing six requests is slow and flickers.', what: 'The database assembles policy + customer + sections + history in one JSON; the page makes one query (later days extend the same function with payments, documents, endorsements, claims).', where: 'fn_policy_get_details, usePolicyDetails.' },
+      { name: 'Prefetching', why: 'The user\'s pointer reaches a link ~200 ms before the click.', what: 'queryClient.prefetchQuery on mouseenter/focus fills the cache; when the page mounts the data is already there.', where: 'PoliciesPage (policy link), prefetchPolicyDetails.' },
+      { name: 'Tabs for composition', why: 'Break a big page into focused sections without extra routes.', what: 'Tabs from Day 36; inactive panels are not rendered, so heavy sections cost nothing until opened.', where: 'PolicyDetailsPage.' },
+      { name: 'Data-driven sections', why: 'Motor, Home, Health and Travel policies have different insured details.', what: 'Each policy_details section becomes an Accordion item rendered by the generic DetailsView.', where: 'Insured tab.' },
+    ],
+    built: ['PolicyDetailsPage (Summary, Insured details, Premium, History)', 'policyQueries.usePolicyDetails + prefetchPolicyDetails', 'fn_policy_get_details'],
+    walkthrough: 'Hover a policy number in the list (the devtools show the query appear), click: the page opens without a spinner. Print produces only the certificate.',
+    api: ['GET /api/policies/{id}/details → { policy, customer, sections[], history[] }'],
+    db: ['functions/322_policy_details.sql'],
+    learned: ['Prefetch what the user is about to open', 'Design endpoints around screens when it removes round trips'],
+    approach: 'The policy file is the heart of servicing: everything about a policy in one place.',
+    mistakes: ['N+1 requests per tab', 'Prefetching everything on page load (waste)'],
+    interview: [['What is prefetching and when is it worth it?', 'Loading data before it is needed, triggered by intent (hover/focus/idle). Worth it for likely next navigations.']],
+    exercise: 'Add a print-friendly policy summary (done via print CSS) - add a "Download PDF" button that calls window.print() with only the certificate tab visible.',
+    next: 'Day 42 - Policy Renewal',
+    commit: 'Day 41: Add policy details',
+  },
+}
