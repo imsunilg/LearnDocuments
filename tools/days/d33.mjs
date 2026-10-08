@@ -1,0 +1,27 @@
+export default {
+  33: {
+    title: 'Home Insurance',
+    react: 'Reusing the dynamic form engine: one DynamicQuotePage for Home/Travel/Health, resolver composition, outer-loader / inner-keyed-form pattern',
+    insurance: 'Home quote + proposal (property, address, building and contents cover) with live premium; Home list/details reuse the shared proposal pages',
+    backend: 'No new endpoints - proposals, premium and form-fields endpoints are product-agnostic; fn_premium_home plugs in via the fn_premium_<type> naming convention',
+    database: 'fn_premium_home (age/type/construction factors, contents + burglary add-ons, tenant discount), home rating rows, value_key (name|code) for master data selects',
+    objectives: ['Ship a whole product line with almost no new UI code', 'Combine a static schema with dynamic rules', 'Understand why config-driven design pays off'],
+    concepts: [
+      { name: 'Outer loader / inner keyed form', why: 'react-hook-form defaultValues are read once; they must exist before the form mounts.', what: 'DynamicQuotePage loads fields (+ proposal in edit mode) and only then renders <QuoteForm key=…/> with ready initial values.', where: 'DynamicQuotePage.tsx.' },
+      { name: 'Ready-to-quote gate', why: 'Do not call the pricing API with incomplete forms.', what: 'ready = plan chosen AND validateFields() returns no problems for the visible fields.', where: 'DynamicQuotePage.' },
+      { name: 'Stable codes vs display names', why: 'Rating factors must not depend on label text.', what: 'Config field valueKey "code" stores APARTMENT instead of "Apartment / Flat"; address selects keep names.', where: 'product_field_config.value_key.' },
+      { name: 'Insurance maths (home)', why: 'Know what you price.', what: 'Structure premium = building value × plan rate × age × type × construction factors; contents and burglary are add-ons; tenants get a discount.', where: 'fn_premium_home.' },
+    ],
+    built: ['DynamicQuotePage (shared by three product lines)', 'Home routes (lazy) - list, new, details, edit', 'fn_premium_home and rating rows'],
+    walkthrough: 'Home → New quote: pick customer and plan, answer the property questions; ticking contents cover reveals the contents value. The premium appears as soon as every visible rule is satisfied.',
+    db: ['functions/301_premium_home.sql', 'seed/151_premium_rates_home.sql', 'product_field_config.value_key'],
+    problems: [['PowerShell turned `name` in a TS comment into a newline', 'Fixed by editing the file with the editor tool; avoid backticks inside PowerShell here-strings.']],
+    learned: ['A good abstraction makes a new product line a data task', 'Keep escape hatches (Motor remains hand-written)'],
+    approach: 'The engine pays for itself with the second product line; with three it is a clear win.',
+    mistakes: ['Initialising the form before data has loaded', 'Rating on display names'],
+    interview: [['How do you initialise a form from async data?', 'Load first, then mount the form with the loaded values (or reset() once), keyed by the record id.']],
+    exercise: 'Add a "Contents cover" optional section (done through contents checkbox) - now add a "jewellery & valuables" value field with its own rate to the Home calculator.',
+    next: 'Day 34 - Travel Insurance',
+    commit: 'Day 33: Add home insurance',
+  },
+}
