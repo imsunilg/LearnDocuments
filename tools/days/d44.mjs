@@ -1,0 +1,27 @@
+export default {
+  44: {
+    title: 'Claims Management',
+    react: 'Status workflows in the UI (actions derived from the current status + permissions), timeline component, async policy combobox, dialogs that collect different data per action',
+    insurance: 'Claim intimation against an active policy, claims list with filters, claim details with workflow actions (review, request documents, approve with amount, reject, settle) and a status timeline',
+    backend: 'ClaimsController: list/get (generated), POST /api/claims, POST /{id}/status (claims.edit; Approved/Rejected need claims.approve), GET /{id}/timeline',
+    database: 'claims table, fn_claim_create (policy period, sum insured and product-line rules), fn_claim_change_status (workflow + approved amount checks + history), vw_claims, 6 demo claims in different states',
+    objectives: ['Model a claim lifecycle', 'Drive UI actions from a transition table', 'Validate business rules on both sides', 'Show history as a timeline'],
+    concepts: [
+      { name: 'Claim lifecycle (insurance)', why: 'A claim moves through investigation, documentation, decision and payment.', what: 'Intimated → Under Review ⇄ Documents Pending → Approved → Settled; Rejected and Withdrawn end the claim. Each move is recorded with who/when/why.', where: 'fn_claim_transition_allowed.' },
+      { name: 'Transition table in the UI', why: 'Buttons must match the rules the server enforces.', what: 'CLAIM_NEXT[status] lists the allowed next states with the permission each needs; the page filters it by can(permission). The server still enforces everything.', where: 'models/claim.ts, ClaimDetailsPage.' },
+      { name: 'One dialog, different inputs', why: 'Approve needs an amount; Reject needs a reason; Review needs nothing.', what: 'The dialog shows fields according to the target status and disables Confirm until the required ones are filled.', where: 'ClaimDetailsPage.' },
+      { name: 'Business rules at two layers', why: 'Instant feedback AND integrity.', what: 'The form checks policy period and sum insured immediately; fn_claim_create re-checks (plus claim type vs product line).', where: 'ClaimIntimationPage, fn_claim_create.' },
+    ],
+    built: ['ClaimsPage, ClaimIntimationPage, ClaimDetailsPage', 'PolicyPicker, SearchBox', 'claimQueries (queries + mutations)', 'Claims DB objects and seed'],
+    walkthrough: 'Claims → Intimate a claim: pick a policy, the claim types offered depend on the product line. As ClaimsOfficer open a claim: Start review → Approve (enter amount ≤ claimed) → Mark settled. Every step appears in the timeline.',
+    api: ['GET /api/claims?status=&claimType=&productTypeCode=&search=', 'POST /api/claims', 'POST /api/claims/{id}/status { status, remarks, approvedAmount }', 'GET /api/claims/{id}/timeline'],
+    db: ['tables/130_claims.sql', 'functions/360_claims.sql', 'seed/171_demo_claims.sql'],
+    learned: ['A transition map is the single source of truth for workflow', 'Permissions can differ per transition'],
+    approach: 'Claims are where the insurer keeps its promise - clarity of status and an audit trail matter most.',
+    mistakes: ['Showing actions the server will reject', 'Approving more than claimed or insured', 'No reason captured on rejection'],
+    interview: [['How do you keep UI actions in sync with workflow rules?', 'Drive them from the same transition table (or fetch allowed actions from the API) and always enforce on the server.']],
+    exercise: 'Add claim-status badge colours and timeline (done) - add an SLA indicator: claims older than 7 days in Under Review turn red.',
+    next: 'Day 45 - Payment Management',
+    commit: 'Day 44: Add claims management',
+  },
+}
