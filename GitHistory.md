@@ -2,6 +2,7 @@
 
 | Commit | Date | Message |
 |---|---|---|
+| bf5aa5b | 2026-10-08 | Day 09: Add loading, error and empty states |
 | 8ea1cf3 | 2026-10-08 | Day 08: Connect React to .NET API for customers |
 | fe9c25f | 2026-10-08 | Day 07: Add routing and API/database foundation |
 | 24b6bff | 2026-10-08 | Day 06: Load customers with useEffect |
