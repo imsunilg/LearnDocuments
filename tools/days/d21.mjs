@@ -1,0 +1,28 @@
+export default {
+  21: {
+    title: 'Role Management',
+    react: 'Complex forms, checkbox matrices, indeterminate checkboxes, derived selection state',
+    insurance: 'Administration → Roles: create/edit roles and assign permissions with a module × action matrix',
+    backend: 'RolesController CRUD (system roles protected), GET/PUT /api/roles/{id}/permissions, GET /api/permissions/catalog',
+    database: 'permissions catalogue table, fn_permission_catalog, fn_role_get_permissions, fn_role_set_permissions (validates keys, replaces set)',
+    objectives: ['Build a matrix editor', 'Use derived state for group checkboxes', 'Treat a Set as immutable state', 'Protect system data'],
+    concepts: [
+      { name: 'Derived state', why: 'The state of a row/column checkbox follows from the individual checkboxes - storing it separately would drift.', what: 'Compute checked/indeterminate during render from the Set of selected keys.', where: 'PermissionMatrix.state().' },
+      { name: 'Indeterminate checkbox', why: 'Show "some selected".', what: 'Only settable via the DOM property `input.indeterminate`.', how: 'A tiny TriCheckbox sets it in an effect through a ref.', where: 'PermissionMatrix.' },
+      { name: 'Immutable Set updates', why: 'React needs a new reference.', what: '`const next = new Set(selected); next.add(k); setSelected(next)`', where: 'toggle().' },
+      { name: 'Local editable copy of server data', why: 'The user edits a draft; nothing is saved until "Save".', what: 'Copy fetched data into state in an effect, track `dirty`.', where: 'RolePermissionsPage.' },
+    ],
+    built: ['RolesPage + RoleFormModal', 'RolePermissionsPage + PermissionMatrix', 'Permission catalogue in the DB', 'Server rules: system roles and roles with users cannot be deleted'],
+    walkthrough: 'The catalog (modules → actions) drives the matrix, so adding a new module needs no UI change. Saving sends the full set; the DB function validates keys and replaces the set atomically.',
+    api: ['POST /api/roles, PUT /api/roles/{id}, DELETE /api/roles/{id}', 'GET /api/roles/{id}/permissions', 'PUT /api/roles/{id}/permissions { permissions: [] }', 'GET /api/permissions/catalog'],
+    db: ['tables/012_permissions.sql', 'seed/055_permissions.sql', 'functions/220_roles.sql'],
+    learned: ['Data-driven UIs scale', 'JWT permissions refresh on the next token refresh - document the delay', 'Protect system rows in the API'],
+    approach: 'A matrix is the standard UX for RBAC administration and is driven by the catalog.',
+    mistakes: ['Storing "all" flags separately from the items', 'Mutating the Set in place', 'Letting admins delete system roles'],
+    interview: [['How do you implement a select-all checkbox?', 'Derive checked/indeterminate from the child selection; the header toggles all children.'], ['When do permission changes take effect?', 'When a new access token is issued (refresh or login), because permissions are token claims.']],
+    exercise: 'Add a "Clone role" action that creates a new role with the same permissions.',
+    hint: 'Create the role, then call setPermissions(newId, await getPermissions(sourceId)).',
+    next: 'Day 22 - Agent Management',
+    commit: 'Day 21: Add role management',
+  },
+}

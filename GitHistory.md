@@ -2,6 +2,7 @@
 
 | Commit | Date | Message |
 |---|---|---|
+| f984953 | 2026-10-08 | Day 20: Add user management |
 | 7121c61 | 2026-10-08 | Day 19: Add role-based UI rendering |
 | cf21ced | 2026-10-08 | Day 18: Add protected routes and auth context |
 | a87109a | 2026-10-08 | Day 17: Add login with JWT |
