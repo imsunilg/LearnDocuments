@@ -1,0 +1,26 @@
+export default {
+  18: {
+    title: 'Protected routes, auth context, token handling',
+    react: 'Route guards, AuthContext, Axios interceptors, token expiry, logout',
+    insurance: 'Whole portal requires sign-in; session survives reload; automatic sign-out when the session cannot be renewed',
+    backend: 'Fallback authorization policy (secure by default); [AllowAnonymous] only on login/refresh/logout/health',
+    objectives: ['Guard routes with a layout route', 'Restore a session on page load', 'Refresh tokens transparently via an interceptor', 'Handle logout and expiry'],
+    concepts: [
+      { name: 'Route guard (layout route)', why: 'Pages must not render for anonymous users.', what: 'ProtectedRoute renders <Outlet/> only when authenticated; otherwise <Navigate to="/login"/> with the original location in state.', how: 'Three states: loading (splash), anonymous (redirect), authenticated (outlet).', where: 'app/routes/ProtectedRoute.tsx.' },
+      { name: 'Axios interceptors', why: 'Token handling must not be copy-pasted into every call.', what: 'Request interceptor adds Bearer token; response interceptor reacts to 401.', how: '401 → one silent refresh → replay the original request; refresh failure → sessionEvents.emitExpired().', where: 'services/auth/authInterceptor.ts.' },
+      { name: 'Single-flight refresh', why: 'Refresh tokens rotate; two parallel refreshes look like theft (and React StrictMode runs effects twice in dev).', what: 'Share one in-flight promise.', how: '`inflight ??= authApi.refresh()...finally(() => inflight = null)`', where: 'services/auth/session.ts.' },
+      { name: 'Session restore', why: 'Access tokens live in memory and vanish on reload.', what: 'On mount call /auth/refresh; the httpOnly cookie is sent automatically.', where: 'AuthProvider.' },
+    ],
+    built: ['ProtectedRoute', 'AuthProvider with status/login/logout/auto-renew', 'Interceptor with replay', 'UserMenu (avatar + sign out)', 'Redirect back to the requested page after login'],
+    walkthrough: 'App start: status=loading → refresh attempt → authenticated or anonymous. The timer renews the token 60s before expiry; any 401 triggers one refresh+retry.',
+    api: ['All endpoints require a valid JWT by default (401 otherwise)'],
+    problems: [['Token reuse detection logged users out in dev', 'StrictMode mounted the provider twice and fired two refreshes with the same cookie. Fixed by sharing one in-flight promise (single-flight).']],
+    learned: ['Guards are layout routes', 'Interceptors centralise cross-cutting HTTP concerns', 'Secure by default beats remembering [Authorize]'],
+    approach: 'Silent refresh keeps users productive while keeping access tokens short-lived and out of storage.',
+    mistakes: ['Infinite 401 → refresh → 401 loops (guard with _retried and skip auth endpoints)', 'Redirecting before the session restore finishes (flash of login page)'],
+    interview: [['How do you protect routes in React Router?', 'A layout route that checks auth state and renders Outlet or Navigate.'], ['Why is the refresh single-flight?', 'Rotating tokens would otherwise be revoked by the second concurrent call.']],
+    exercise: 'Redirect back to the originally requested page after login (done via location.state.from) - now add an "Session expired" toast when auto-logout happens.',
+    next: 'Day 19 - Role-based UI',
+    commit: 'Day 18: Add protected routes and auth context',
+  },
+}
