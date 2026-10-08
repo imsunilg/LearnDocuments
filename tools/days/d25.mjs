@@ -1,0 +1,27 @@
+export default {
+  25: {
+    title: 'Master Data Management',
+    react: 'Dynamic dropdown loading, caching master data in context (promise cache), cascading selects',
+    insurance: 'Administration → Master data (states, cities, vehicle makes/models, relationships, occupations, payment modes...) and State → City dropdowns in the customer form',
+    backend: 'MasterDataController: admin CRUD + cached GET /api/master-data/by-type/{type}; IMemoryCache with a shared change token invalidated on every write',
+    database: 'master_data (type, code, name, parent_id, sort_order, meta jsonb), fn_masterdata_get_by_type, fn_masterdata_get_types, large seed (13 states, 36 cities, 10 makes, 25 models ...)',
+    objectives: ['Serve reference data efficiently', 'Cache at two levels (API memory + browser context)', 'Build cascading dropdowns', 'Model hierarchical data with a self-referencing table'],
+    concepts: [
+      { name: 'Reference data caching', why: 'Dropdown data changes rarely but is requested on nearly every form.', what: 'API: IMemoryCache (15 min, evicted on write). Browser: MasterDataProvider caches promises per type/parent.', how: 'Caching the promise, not the value, de-duplicates concurrent requests.', where: 'MasterDataCache.cs, MasterDataProvider.tsx.' },
+      { name: 'Cascading dropdowns', why: 'City options depend on the chosen state.', what: 'useMasterData("CITY", stateId) where stateId comes from the selected state; null = parent not chosen.', how: 'Changing the state clears the city via register(..., { onChange }).', where: 'StateCityFields.tsx.' },
+      { name: 'Self-referencing table', why: 'One table can hold STATE→CITY and MAKE→MODEL trees.', what: 'parent_id references the same table; meta jsonb holds type-specific data.', where: 'tables/050_master_data.sql.' },
+      { name: 'Context as cache', why: 'Share fetched reference data between unrelated components.', what: 'The context value is a stable API (get/invalidate); state lives in a ref.', where: 'masterDataContext.ts.' },
+    ],
+    built: ['MasterDataPage (type list + CrudListPage)', 'MasterDataProvider + useMasterData', 'StateCityFields used by the customer form', 'master_data seed', 'MasterDataCache'],
+    walkthrough: 'The customer form now offers State then City. Admins edit master data under Administration; the API cache is evicted and the browser cache is cleared, so the next dropdown load is fresh.',
+    api: ['GET /api/master-data/by-type/{type}?parentId=', 'GET /api/master-data/types', 'CRUD /api/master-data'],
+    db: ['tables/050_master_data.sql', 'seed/130_master_data.sql', 'functions/230_masterdata.sql', 'generator: jsonb null handling'],
+    learned: ['Cache promises to coalesce requests', 'Invalidate on every write path', 'Hierarchies fit a self-referencing table'],
+    approach: 'Centralised master data keeps every module (customers, motor, claims) consistent and admin-editable.',
+    mistakes: ['Fetching the same list in every component', 'Forgetting to clear the cache after edits', 'Storing names instead of ids for relationships that must stay consistent (customers keep names today by design)'],
+    interview: [['How would you cache API data in React?', 'A query cache (TanStack Query) or a context/ref holding promises with invalidation.'], ['How do you implement dependent dropdowns?', 'Derive the child query from the parent value and reset the child when the parent changes.']],
+    exercise: 'Add the same State → City cascade to the Broker form (use StateCityFields).',
+    next: 'Day 26 - Motor Insurance module',
+    commit: 'Day 25: Add master data management',
+  },
+}
