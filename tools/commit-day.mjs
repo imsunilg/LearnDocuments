@@ -10,6 +10,18 @@ const root = join(here, '..', '..')
 const n = Number(process.argv[2])
 const run = (c) => execSync(c, { cwd: root, stdio: ['ignore', 'pipe', 'inherit'] }).toString()
 
+// End-of-day rule: never commit broken code. Builds must pass first (set SKIP_BUILD=1 to bypass for docs-only commits).
+if (!process.env.SKIP_BUILD) {
+  const sh = (cmd, cwd) => execSync(cmd, { cwd: join(root, cwd), stdio: ['ignore', 'ignore', 'inherit'] })
+  try {
+    sh('npm run build', 'LearnWEB')
+    sh('dotnet build --nologo -v q', 'LearnAPI')
+  } catch {
+    console.error('BUILD FAILED - not committing.')
+    process.exit(1)
+  }
+}
+
 // Optional extra args = only these paths belong to this day (others stay unstaged for later days).
 const paths = process.argv.slice(3)
 const partial = paths.length > 0

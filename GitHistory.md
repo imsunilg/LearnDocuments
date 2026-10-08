@@ -2,6 +2,7 @@
 
 | Commit | Date | Message |
 |---|---|---|
+| d49053b | 2026-10-08 | Day 10: Complete customer CRUD with search and pagination |
 | bf5aa5b | 2026-10-08 | Day 09: Add loading, error and empty states |
 | 8ea1cf3 | 2026-10-08 | Day 08: Connect React to .NET API for customers |
 | fe9c25f | 2026-10-08 | Day 07: Add routing and API/database foundation |
