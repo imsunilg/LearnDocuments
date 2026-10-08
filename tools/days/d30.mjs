@@ -1,0 +1,28 @@
+export default {
+  30: {
+    title: 'Motor: policy creation',
+    react: 'Navigation after a mutation (route state), success screens, print stylesheet',
+    insurance: 'Issue a policy from an approved proposal: policy number generation, certificate-style summary page, print layout; basic policy list',
+    backend: 'PoliciesController (read endpoints + POST /api/policies/issue), explicit [HasPermission] overrides the verb-based rule',
+    database: 'policies + policy_details tables, fn_next_policy_no, fn_policy_create (single transaction), vw_policies (effective status, days to expiry, joined names)',
+    objectives: ['Perform a multi-table business operation atomically', 'Generate human-friendly document numbers', 'Redirect to a success screen with route state', 'Style for print'],
+    concepts: [
+      { name: 'Transactional issuance', why: 'Issuing touches the policy, its sections, the proposal status and the history. Partial success would corrupt data.', what: 'A PostgreSQL function runs as one transaction: any exception rolls back everything. Row lock (FOR UPDATE) prevents double issuing.', where: 'fn_policy_create.' },
+      { name: 'Policy number generation', why: 'Customers quote policy numbers on the phone.', what: 'POL-MOT-2026-000042 = prefix + product line + year + sequence (sequences are gap-tolerant but never duplicate).', where: 'fn_next_policy_no.' },
+      { name: 'Route state', why: 'Show a one-time success banner after redirect.', what: 'navigate(url, { state: { issued: true } }) - read with useLocation().state; it disappears on refresh because it lives in history state.', where: 'ProposalDetailsPage → PolicySummaryPage.' },
+      { name: 'Print CSS', why: 'A policy certificate must print cleanly.', what: '@media print hides chrome (header, sidebar, buttons).', where: 'ui.css (.no-print).' },
+    ],
+    built: ['Issue policy button + confirm dialog', 'PolicySummaryPage (certificate + print)', 'PoliciesPage (basic list)', 'Policy tables/functions/view'],
+    walkthrough: 'Underwriter approves a proposal → "Issue policy" → POST /api/policies/issue → fn_policy_create → redirect to /policies/{id} with a success banner. Printing the page hides everything except the certificate.',
+    api: ['GET /api/policies, GET /api/policies/{id}', 'POST /api/policies/issue { proposalId } (policies.issue)'],
+    db: ['tables/090_policies.sql', 'functions/320_policies.sql', 'generated vw_policies + fn_policy_get_all/get_by_id'],
+    problems: [['Underwriters have policies.issue but not policies.create, so the verb-based filter blocked POST /issue', 'PermissionFilter now skips the verb rule when the action has an explicit [HasPermission] policy.']],
+    learned: ['Do multi-step operations inside the database transaction', 'Immutable policy rows: changes happen via endorsements'],
+    approach: 'Issuing is the legal moment of the insurance contract, so it is atomic, audited (history) and permission-protected.',
+    mistakes: ['Issuing in several API calls (not atomic)', 'Reusing policy numbers', 'Letting any role issue policies'],
+    interview: [['How do you make a multi-table operation atomic?', 'Wrap it in a database transaction (here a single function call).'], ['How do you pass one-time data to the next route?', 'Router navigation state.']],
+    exercise: 'Show a "Policy issued" summary page with print layout (done) - add a QR code of the policy number.',
+    next: 'Day 31 - Advanced reusable components',
+    commit: 'Day 30: Add motor policy creation',
+  },
+}
