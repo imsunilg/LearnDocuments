@@ -2,6 +2,7 @@
 
 | Commit | Date | Message |
 |---|---|---|
+| 24b6bff | 2026-10-08 | Day 06: Load customers with useEffect |
 | b749edf | 2026-10-08 | Day 05: Add customer create/edit screen with validation |
 | 6b8ae15 | 2026-10-08 | Day 04: Add customer listing with conditional rendering |
 | 9626bd2 | 2026-10-08 | Day 03: Add customer form with controlled inputs |

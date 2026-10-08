@@ -1,0 +1,27 @@
+export default {
+  7: {
+    title: 'React Router + backend and database foundation',
+    react: 'React Router: nested routes, route params, Link/NavLink, useNavigate, useParams',
+    insurance: 'Routes for Dashboard, Customers, Customer details, 404',
+    backend: 'LearnAPI skeleton (Clean Architecture folders, Swagger, CORS, /api/health, Npgsql data source)',
+    database: 'LearnInsuranceDB + schema learninsurancedb, ID decision (BIGINT), customers table with audit fields, setup.ps1',
+    objectives: ['Replace state-based navigation with URLs', 'Read route params', 'Create the API and database foundations'],
+    concepts: [
+      { name: 'React Router', why: 'Users expect URLs, back/forward and deep links.', what: 'Maps URL → component tree. Data router: createBrowserRouter + RouterProvider.', how: 'Route objects can nest; parent renders <Outlet/> where the matched child appears.', where: 'app/routes/router.tsx; PageLayout is the layout route.' },
+      { name: 'Link / NavLink / useNavigate / useParams', why: 'Client-side navigation without full page reloads.', what: 'Link navigates; NavLink adds active styling; useNavigate navigates imperatively; useParams reads :id.', how: 'History API pushState + route matching.', where: 'Sidebar, CustomerList, CustomerDetailsPage.' },
+    ],
+    built: ['Router with nested routes and wildcard 404', 'NavLink sidebar', 'ASP.NET Core 9 project with Swagger and /api/health', 'PostgresJsonDb gateway (IJsonDb)', 'LearnDB setup script, schema and customers table'],
+    walkthrough: 'The root route renders PageLayout; children render in its Outlet. `path: "*"` catches unknown URLs. The API registers one NpgsqlDataSource and exposes IJsonDb.CallAsync(function, args) so controllers never contain SQL.',
+    architecture: ['LearnAPI folders: Controllers, Application, Domain, Infrastructure, Common, Middleware, Extensions'],
+    api: ['GET /api/health - API + database status'],
+    db: ['Database LearnInsuranceDB, schema learninsurancedb, extension pgcrypto', 'Table customers (BIGINT identity PK, audit fields, check constraints)', 'ID strategy documented in LearnDocuments/Database/Database.md'],
+    problems: [['react-router package name', 'v7+ exports everything from `react-router` (no react-router-dom needed).']],
+    learned: ['Routes are data', 'Layout routes use Outlet', 'useParams returns strings'],
+    approach: 'Declarative routing keeps navigation testable and linkable.',
+    mistakes: ['Using <a href> (full reload)', 'Forgetting `end` on the "/" NavLink so it is always active', 'Treating route params as numbers'],
+    interview: [['Link vs a?', 'Link does client-side navigation without reloading.'], ['What is an Outlet?', 'Placeholder where the matched child route renders.'], ['Why does NavLink "/" need end?', 'Otherwise every URL matches "/" as prefix.']],
+    exercise: 'Add a 404 Not Found route (done: path "*") - customise its design.',
+    next: 'Day 08 - Axios, API service layer',
+    commit: 'Day 07: Add routing and API/database foundation',
+  },
+}
