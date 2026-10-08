@@ -2,6 +2,7 @@
 
 | Commit | Date | Message |
 |---|---|---|
+| 86e6d00 | 2026-10-08 | Day 36: Add tabs, accordion, stepper and wizard components |
 | 4a1764f | 2026-10-08 | Day 35: Add health insurance |
 | 51f7fa1 | 2026-10-08 | Day 34: Add travel insurance |
 | 3a09ed4 | 2026-10-08 | Day 33: Add home insurance |
