@@ -2,6 +2,7 @@
 
 | Commit | Date | Message |
 |---|---|---|
+| 9c7f678 | 2026-10-08 | Day 38: Introduce TanStack Query |
 | 2c77f31 | 2026-10-08 | Day 37: Add insurance proposal wizard |
 | 86e6d00 | 2026-10-08 | Day 36: Add tabs, accordion, stepper and wizard components |
 | 4a1764f | 2026-10-08 | Day 35: Add health insurance |
