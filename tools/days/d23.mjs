@@ -1,0 +1,26 @@
+export default {
+  23: {
+    title: 'Broker Management',
+    react: 'Reuse and extract a generic CRUD page pattern (CrudListPage<T>); lookup (remote select) fields',
+    insurance: 'Brokers (IRDAI registration, GST, firm details) and agents linked to brokers',
+    backend: 'BrokersController + BrokerRequest/validator (GSTIN pattern)',
+    database: 'brokers table, FK agents.broker_id → brokers, vw_agents joins the broker name, seeded brokers',
+    objectives: ['Recognise duplication across pages', 'Extract a generic page component', 'Add relationships (select loaded from the API)'],
+    concepts: [
+      { name: 'Rule of three', why: 'Abstract after the third repetition, not before.', what: 'Users, Agents and Brokers were the same page; CrudListPage<T> captures the common shape.', how: 'Props: columns, fields, api, filters, permissionModule, rowName; slots for extra row actions.', where: 'components/crud/CrudListPage.tsx.' },
+      { name: 'Lookup fields', why: 'An agent belongs to a broker chosen from a list.', what: 'FieldDef.lookup(signal) returns options from the API.', how: 'SelectField uses useApi to load them; the value is the broker id.', where: 'agentFields.brokerId, services/api/lookups.ts.' },
+      { name: 'Joined views', why: 'Show the broker name in the agents grid and allow sorting/searching by it.', what: 'vw_agents LEFT JOINs brokers.', where: 'entities.mjs (agent.extraSelect/joins).' },
+    ],
+    built: ['CrudListPage<T>', 'BrokersPage (config only)', 'AgentsPage refactored onto CrudListPage with broker select, licence-expiry badges', 'brokers table, FK and seed'],
+    walkthrough: 'BrokersPage is ~30 lines: a columns array, brokerFields, brokerApi. Search, filters, sort, pagination, modal form, confirm-delete and permission checks come from CrudListPage.',
+    api: ['GET/POST /api/brokers, GET/PUT/DELETE /api/brokers/{id}, PATCH /api/brokers/{id}/status', 'GET /api/agents?brokerId=… (filter)'],
+    db: ['tables/030_brokers.sql, 032_agents_broker_fk.sql', 'seed/105_brokers.sql', 'vw_agents with broker_name'],
+    learned: ['Extract patterns once they repeat', 'Generic components still need escape hatches (rowActions, headerActions)'],
+    approach: 'The CRUD kit makes the next ten modules cheap while custom pages remain possible.',
+    mistakes: ['Abstracting too early', 'Passing dozens of boolean props instead of slots'],
+    interview: [['When do you extract a shared component?', 'When the same structure appears three times and the differences can be expressed as props/slots.'], ['How do you model a foreign key in a form?', 'A select whose options come from the related entity; the value is the id.']],
+    exercise: 'Add a "Show agents" row action on the brokers table that links to /agents?brokerId=<id> and make AgentsPage read that filter from the URL.',
+    next: 'Day 24 - Insurance Product Management',
+    commit: 'Day 23: Add broker management',
+  },
+}
