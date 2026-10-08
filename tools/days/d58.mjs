@@ -1,0 +1,28 @@
+﻿export default {
+  58: {
+    title: 'Docker and docker-compose',
+    react: 'Multi-stage build (Node builds, nginx serves), SPA fallback routing, immutable asset caching, same-origin /api proxy',
+    insurance: 'A new developer or a test server gets the complete system (database with seed data, API, web) from one command',
+    backend: 'LearnAPI/Dockerfile: SDK stage compiles, ASP.NET runtime stage ships, runs as the non-root "app" user, uploads on a volume',
+    database: 'postgres:17 container; LearnDB/docker/init.sh applies schema, tables, functions, indexes and seed on first start (same order as setup.ps1)',
+    objectives: ['Containerise API and web', 'Compose three services with a health-gated start order', 'Persist data and uploads in volumes', 'Keep secrets in .env, not in images'],
+    concepts: [
+      { name: 'Multi-stage builds', why: 'The .NET SDK and Node toolchain are huge and are attack surface in production.', what: 'Build in a heavy stage, copy only the output into a small runtime image (aspnet, nginx).', where: 'Dockerfiles.' },
+      { name: 'Layer caching', why: 'Rebuilds should take seconds.', what: 'Copy package.json / csproj first, restore dependencies, then copy the source: dependency layers are reused until dependencies change.', where: 'Dockerfiles.' },
+      { name: 'nginx as the front door', why: 'One origin for site and API keeps the httpOnly refresh cookie same-site and removes CORS from the browser path.', what: 'Static files with SPA fallback, /api proxied to the api service with X-Forwarded headers, hashed assets cached a year, index.html never cached.', where: 'nginx.conf.' },
+      { name: 'Compose orchestration', why: 'Start order and data lifetime matter.', what: 'depends_on with a pg_isready healthcheck, named volumes dbdata and uploads, secrets via ${DB_PASSWORD} and ${JWT_KEY} from .env (compose refuses to start without them).', where: 'docker-compose.yml.' },
+    ],
+    built: ['LearnAPI/Dockerfile + .dockerignore', 'LearnWEB/Dockerfile + nginx.conf + .dockerignore', 'docker-compose.yml + .env.example', 'LearnDB/docker/init.sh', '.gitattributes (LF endings for shell scripts)'],
+    walkthrough: 'Copy .env.example to .env, set the two secrets, run: docker compose up --build. Open http://localhost:8080 and log in as admin / Admin@123.',
+    api: [],
+    db: ['docker/init.sh'],
+    learned: ['Ship small runtime images', 'Run as non-root', 'Volumes hold state, images do not', 'Order containers by health, not just by start'],
+    approach: 'Immutable images plus external config: the same image runs in every environment.',
+    mistakes: ['Copying the whole source before restoring packages', 'Baking secrets into images', 'Running as root', 'CRLF line endings in shell scripts used inside Linux containers'],
+    interview: [['Why a multi-stage Dockerfile?', 'To keep build tools out of the final image: smaller, faster to pull and with far less attack surface.']],
+    exercise: 'Add a /health proxy check to the compose file as a healthcheck for the web service.',
+    next: 'Day 59 - Code Review and Refactoring',
+    commit: 'Day 58: Add Docker and docker-compose',
+    notes: 'IMPORTANT: Docker is not installed on the machine where this project was built, so these files were written and reviewed but NOT executed. Run docker compose up --build and fix any typo you meet - treat it as exercise 1.',
+  },
+}
