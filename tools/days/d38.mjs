@@ -1,0 +1,26 @@
+export default {
+  38: {
+    title: 'TanStack Query',
+    react: 'Server state vs client state, useQuery, query keys, QueryClientProvider, staleTime/gcTime, keepPreviousData, devtools',
+    insurance: 'Customers, Products and Master Data now come from a shared query cache - instant back-navigation, request de-duplication, background refresh',
+    objectives: ['Separate server state from UI state', 'Design query keys', 'Replace hand-written fetching hooks with useQuery', 'Inspect the cache with the devtools'],
+    concepts: [
+      { name: 'Server state vs client state', why: 'Server data is owned elsewhere, can change without you knowing, and is shared by many components.', what: 'Client state (form values, open dialogs) → useState/useReducer/context. Server state (customers, products) → a query cache.', where: 'customerQueries.ts, productQueries.ts, useMasterData.ts.' },
+      { name: 'useQuery & query keys', why: 'The cache needs an identity for each request.', what: 'useQuery({ queryKey, queryFn }). Keys are arrays matched by prefix: ["customers"] covers every customer query; ["customers","detail",5] one record. A key factory keeps them consistent.', where: 'customerKeys.' },
+      { name: 'staleTime / gcTime', why: 'Decide how fresh is fresh.', what: 'Within staleTime a cached result is served without a request; after it, the cached data is shown immediately AND refetched in the background. gcTime controls how long unused entries survive.', where: 'app/queryClient.ts (30 s default, master data 15 min).' },
+      { name: 'keepPreviousData', why: 'Changing page/filter should not flash an empty table.', what: 'placeholderData: keepPreviousData keeps the last result visible (dimmed) until the new one arrives.', where: 'useCustomerList.' },
+      { name: 'Clear the cache on logout', why: 'Cached customer data must never leak to the next user.', what: 'queryClient.clear() when the session ends.', where: 'AuthProvider.clear.' },
+    ],
+    built: ['QueryClientProvider + devtools (dev only)', 'customerQueries / productQueries / useMasterData on TanStack Query', 'CustomersPage, CustomerDetailsPage, CustomerFormPage migrated', 'Removed the hand-written MasterDataProvider'],
+    walkthrough: 'Open Customers, click a customer, press Back: no loading spinner - the list is served from cache and refreshed quietly. Open the devtools (flower icon, bottom-left) to see queries become fresh → stale.',
+    tsNotes: ['Typed query keys with `as const`', 'UseQueryResult<T, Error> flags: isPending, isFetching, isPlaceholderData'],
+    bestPractices: ['Query keys include every variable the fetch depends on', 'Do not copy query data into useState - read it from the cache', 'Retry only on network/5xx errors'],
+    learned: ['useApi (Day 15) was a mini version of this - now you know what the library does for you', 'Cache invalidation is the hard part - Day 39'],
+    approach: 'A query cache removes whole categories of bugs (stale data, duplicate requests, race conditions).',
+    mistakes: ['Putting server data in Redux/Context and syncing by hand', 'Keys that omit parameters (cache collisions)', 'Forgetting to clear the cache on logout'],
+    interview: [['What is the difference between staleTime and gcTime?', 'staleTime: how long data is fresh. gcTime: how long unused data stays in memory.'], ['Why are query keys arrays?', 'Hierarchical matching: invalidating ["customers"] invalidates all keys that start with it.']],
+    exercise: 'Open the React Query devtools and inspect the cache: find the ["masterData","STATE",null] entry and watch it go stale after 15 minutes (or change its staleTime to 5 s).',
+    next: 'Day 39 - Cache, refetch, mutations, optimistic updates',
+    commit: 'Day 38: Introduce TanStack Query',
+  },
+}
