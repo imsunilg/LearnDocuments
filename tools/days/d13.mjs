@@ -1,0 +1,25 @@
+export default {
+  13: {
+    title: 'React Hook Form',
+    react: 'Uncontrolled vs controlled forms, register, handleSubmit, formState, performance benefits',
+    insurance: 'Customer form migrated from hand-rolled useState to React Hook Form',
+    objectives: ['Understand why big forms re-render slowly when controlled', 'Use register/handleSubmit/formState', 'Map server errors with setError'],
+    concepts: [
+      { name: 'Uncontrolled inputs + refs', why: 'A controlled form re-renders on every keystroke; a 40-field proposal form would crawl.', what: 'The DOM keeps values; the library reads them via refs on submit/validation.', how: '`{...register("email", rules)}` returns name/ref/onChange/onBlur.', where: 'CustomerEditor.' },
+      { name: 'handleSubmit & formState', why: 'Validation orchestration and submit state in one place.', what: 'handleSubmit(valid, invalid?) validates first; formState.errors holds per-field errors.', how: 'Only components reading formState subscribe to its changes (Proxy-based).', where: 'CustomerEditor.' },
+      { name: 'setError for server errors', why: 'The API can reject what the client accepted (duplicates, rules).', what: 'Programmatically attach an error to a field.', how: 'Effect over serverErrors → setError(field, {type:"server", message}).', where: 'CustomerEditor.' },
+    ],
+    built: ['customerForm.ts (form values ↔ API payload mapping)', 'CustomerEditor rewritten with RHF'],
+    walkthrough: 'The form works with plain strings; toCustomerInput() trims, uppercases PAN and converts blanks to null before calling the API.',
+    tsNotes: ['useForm<CustomerFormValues>', 'keyof for field names'],
+    bestPractices: ['Separate form-shape (strings) from API-shape', 'Use defaultValues for edit forms; remount with key when the record changes'],
+    learned: ['RHF avoids re-renders', 'register returns props to spread', 'Server errors integrate via setError'],
+    approach: 'RHF scales to the large multi-section insurance forms coming in Phase 4.',
+    mistakes: ['Mixing value= with register (controlled/uncontrolled conflict)', 'Forgetting noValidate when using custom messages'],
+    interview: [['Controlled vs uncontrolled?', 'Controlled stores value in React state; uncontrolled reads from the DOM via refs.'], ['Why is RHF fast?', 'Fewer re-renders: subscriptions to formState are opt-in.']],
+    exercise: 'Add a dynamic list of nominee fields with useFieldArray (name, relationship, share %).',
+    hint: 'const { fields, append, remove } = useFieldArray({ control, name: "nominees" }) and register(`nominees.${i}.name`).',
+    next: 'Day 14 - Zod schema validation',
+    commit: 'Day 13: Migrate customer form to React Hook Form',
+  },
+}

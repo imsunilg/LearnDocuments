@@ -2,6 +2,7 @@
 
 | Commit | Date | Message |
 |---|---|---|
+| 39440b8 | 2026-10-08 | Day 12: Add modal, confirmation dialog and toast |
 | 0cdbc04 | 2026-10-08 | Day 11: Add reusable DataTable component |
 | d49053b | 2026-10-08 | Day 10: Complete customer CRUD with search and pagination |
 | bf5aa5b | 2026-10-08 | Day 09: Add loading, error and empty states |
