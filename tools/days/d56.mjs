@@ -1,0 +1,27 @@
+﻿export default {
+  56: {
+    title: 'Accessibility and Responsive Design',
+    react: 'Skip link, focus management on route change, semantic landmarks, AA colour contrast via design tokens, keyboard-reachable scroll regions, mobile-first header; automated axe-core scans in Playwright',
+    insurance: 'Insurance portals serve everyone: older customers, keyboard-only users, screen-reader users and agents on phones',
+    backend: 'No change',
+    database: 'No change',
+    objectives: ['Meet WCAG 2.1 AA contrast', 'Make navigation work without a mouse', 'Announce SPA page changes', 'Remove horizontal scrolling on phones'],
+    concepts: [
+      { name: 'Automated audit with axe-core', why: 'Catches roughly a third of issues instantly and prevents regressions.', what: 'Playwright injects axe-core and scans 12 screens at desktop and 390px width. First run: contrast failures everywhere (orange on white is only 3:1), scrollable regions without keyboard access.', where: 'scratchpad a11y script (documented in Troubleshooting).' },
+      { name: 'Tokens make contrast fixable in one place', why: 'Colours scattered in components cannot be audited.', what: '--link (5.2:1) and --btn-from/--btn-to replace brand orange for text and button fills; dark theme has its own values.', where: 'theme.css.' },
+      { name: 'SPA focus management', why: 'A route change does not reload the page, so assistive tech hears nothing.', what: 'After navigation focus moves to <main>; a skip link is the first tab stop. We compare the previous path (not a boolean) so StrictMode double effects do not steal focus on first load.', where: 'PageLayout.' },
+      { name: 'Responsive checks', why: 'Horizontal scroll on a phone is a usability bug.', what: 'A script compares scrollWidth to clientWidth per route; the header was 455px wide on a 390px screen and now shrinks gracefully.', where: 'layout.css.' },
+    ],
+    built: ['Skip link and main landmark focus', 'AA colour tokens', 'Mobile header', 'Keyboard-focusable stepper scroll area', 'axe scans: 0 violations on all scanned pages at 1400px and 390px'],
+    walkthrough: 'Press Tab right after the page loads: "Skip to main content" appears. Navigate with the sidebar: focus lands in the content. Resize to phone width: no horizontal page scroll.',
+    api: [],
+    db: [],
+    learned: ['Contrast is a design-token problem', 'Automated tools find what they can; still test with the keyboard', 'Focus is part of SPA routing'],
+    approach: 'Accessibility is cheapest when built into the design system, not retrofitted per page.',
+    mistakes: ['Colour as the only signal', 'Removing focus outlines', 'Icon-only buttons without a name', 'Forgetting that overflow:auto regions need keyboard access'],
+    interview: [['How do you handle focus in a single-page app?', 'Move focus to the new page heading or main region after route changes, provide a skip link, and announce dynamic updates with aria-live regions.']],
+    exercise: 'Add an aria-live region that announces "Page loaded: <title>" after each navigation.',
+    next: 'Day 57 - Environment Configurations and Production Build',
+    commit: 'Day 56: Improve accessibility and responsive design',
+  },
+}

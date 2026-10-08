@@ -2,6 +2,7 @@
 
 | Commit | Date | Message |
 |---|---|---|
+| e35fd36 | 2026-10-08 | Day 55: Add integration tests (MSW and WebApplicationFactory) |
 | 0ce1dc0 | 2026-10-08 | Day 54: Add unit tests (Vitest and xUnit) |
 | a4ff8d0 | 2026-10-08 | Day 53: Add security hardening |
 | 530c323 | 2026-10-08 | Day 52: Add route-level code splitting |
